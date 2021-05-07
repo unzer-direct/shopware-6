@@ -1,0 +1,43 @@
+<sw-modal class="sw-confirm-modal"
+    :title="$tc('sw-order.quickpay.modal.captureTitle')"
+    @modal-close="$emit('close')">
+
+    <p class="sw-confirm-modal__text">
+        {{ $tc('sw-order.quickpay.modal.captureText') }}
+    </p>
+    
+    <p>
+        <sw-field type="number"
+                :allowEmpty="false"
+                :label="$tc('sw-order.quickpay.modal.captureAmount')"
+                size="small"
+                :min="0"
+                :max="maxAmount"
+                class="sw-price-field-gross"
+                :digits="2"
+                :disabled="isLoading"
+                v-model="amount">
+            <template #suffix>
+                {{ currency.symbol }}
+            </template>
+        </sw-field>
+    </p>
+
+    <template #modal-footer>
+
+        <sw-button class="sw-confirm-modal__button-cancel"
+                size="small"
+                @click="$emit('close')">
+            {{ $tc('global.default.cancel') }}
+        </sw-button>
+
+        <sw-button class="sw-confirm-modal__button-confirm"
+                variant="primary"
+                size="small"
+                @click="onConfirm()">
+            {{ $tc('global.default.confirm') }}
+        </sw-button>
+
+    </template>
+
+</sw-modal>

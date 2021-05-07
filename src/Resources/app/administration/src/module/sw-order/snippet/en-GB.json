@@ -1,0 +1,99 @@
+{
+    "sw-order": {
+        "list": {
+            "columnQuickpayActions": "QuickPay"
+        },
+        "detail": {
+            "tabQuickpay": "QuickPay"
+        },
+        "quickpay": {
+            "paymentId": "QuickPay Payment ID:",
+            
+            "amountTotal": "Total amount:",
+            "amountAuthorized": "Authorized:",
+            "amountCaptured": "Captured:",
+            "amountRefunded": "Refunded:",
+            
+            "capture": "Capture",
+            "captureRequestedNotification": "The capture request has been sent",
+            "captureRequestFailedNotification": "The capture request was unsuccessful",
+            
+            "cancel": "Cancel",
+            "cancelRequestedNotification": "The cancel request has been sent",
+            "cancelRequestFailedNotification": "The cancel request was unsuccessful",
+            
+            "refund": "Refund",
+            "refundRequestedNotification": "The refund request has been sent",
+            "refundRequestFailedNotification": "The refund request was unsuccessful",
+            
+            "refresh": "Refresh",
+            
+            "operationCreatedAt": "Created at",
+            "operationType": "Type",
+            "operationAmount": "Amount",
+            "operationStatus": "Status",
+            
+            "operations": "Operations",
+            
+            "types": {
+                "create": "Payment created",
+                "authorize": "Payment autorized",
+                "capture": "Payment captured",
+                "capture_request": "Payment capture requested",
+                "refund": "Payment refunded",
+                "refund_request": "Payment refund requested",
+                "cancel": "Payment cancelled",
+                "cancel_request": "Payment cancel requested",
+                "checksum_failure": "Callback checksum failure",
+                "test_mode_violation": "Test mode violation"
+            },
+            
+            "failedTypes": {
+                "authorize": "Payment not authorized",
+                "capture": "Payment not captured",
+                "cancel": "Payment not cancelled",
+                "refund": "Payment not refunded"
+            },
+            
+            "statusCodes": {
+                "20000": "Approved",
+                "20200": "Waiting approval",
+                "30100": "3D Secure is required",
+                "40000": "Rejected By Acquirer",
+                "40001": "Request Data Error",
+                "40002": "Authorization expired",
+                "40003": "Aborted",
+                "50000": "Gateway Error",
+                "50300": "Communications Error (with Acquirer)"
+            },
+            
+            "modal": {
+                "captureTitle": "Capture Payment",
+                "captureText": "Check the amount and press confirm to send the capture request to QuickPay.",
+                "captureAmount": "Amount:",
+                
+                "cancelTitle": "Cancel Payment",
+                "cancelText": "Do you really want to cancel the payment? Click confirm to send the cancel request to QuickPay.",
+
+                "refundTitle": "Refund Payment",
+                "refundText": "Check the amount and press confirm to send the refund request to QuickPay.",
+                "refundAmount": "Amount:"
+            },
+            
+            "status": {
+                "0": "Created",
+                "5": "Authorized",
+                "10": "Capture requested",
+                "12": "Partially captured",
+                "15": "Captured",
+                "20": "Cancel requested",
+                "25": "Cancelled",
+                "30": "Refund requested",
+                "32": "Partially refunded",
+                "35": "Refunded",
+                "100": "Invalidated"
+            }
+            
+        }
+    }
+}

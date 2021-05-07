@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
+
+    <card>
+        <title>Configuration</title>
+        <title lang="de-DE">Konfiguration</title>
+        
+        <input-field type="text">
+            <name>publicKey</name>
+            <label>Public Key</label>
+            <label lang="de-DE">Public Key</label>
+        </input-field>
+        
+        <input-field type="text">
+            <name>privateKey</name>
+            <label>Private Key</label>
+            <label lang="de-DE">Private Key</label>
+        </input-field>
+        
+        <input-field type="checkbox">
+            <name>testmode</name>
+            <label>Testmode Enabled</label>
+            <label lang="de-DE">Testmode Aktiviert</label>
+            <value>0</value>
+        </input-field>
+        
+        <input-field type="single-select">
+            <name>logLevel</name>
+            <options>
+                <option>
+                    <id>debug</id>
+                    <name>DEBUG</name>
+                    <name lang="de-DE">DEBUG</name>
+                </option>
+                <option>
+                    <id>info</id>
+                    <name>INFO</name>
+                    <name lang="de-DE">INFO</name>
+                </option>
+                <option>
+                    <id>warning</id>
+                    <name>WARNING</name>
+                    <name lang="de-DE">WARNING</name>
+                </option>
+                <option>
+                    <id>error</id>
+                    <name>ERROR</name>
+                    <name lang="de-DE">ERROR</name>
+                </option>
+            </options>
+            <defaultValue>info</defaultValue>
+            <label>Logging level</label>
+            <label lang="de-DE">Logging Level</label>
+        </input-field>
+        
+    </card>
+</config>

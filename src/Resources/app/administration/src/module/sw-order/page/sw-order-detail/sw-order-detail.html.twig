@@ -1,0 +1,13 @@
+{% block sw_order_detail_content_tabs_general %}
+    {% parent %}
+    <sw-tabs-item :route="{ name: 'sw.order.detail.quickpay', params: { id: $route.params.id } }"
+                  :title="$tc('sw-order.detail.tabQuickpay')"
+                  :disabled="isEditing">
+        {{ $tc('sw-order.detail.tabQuickpay') }}
+    </sw-tabs-item>
+{% endblock %}
+{% block sw_order_detail_actions_slot_smart_bar_actions %}
+    <template v-if="!quickpayActive">
+        {% parent %}
+    </template>
+{% endblock %}

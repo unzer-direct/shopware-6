@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        
+        <service id="QuickPay\Service\QuickPayService">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry"/>
+            <argument type="service" id="order_transaction.repository" />
+            <argument type="service" id="quickpay_payment_operation.repository" />
+            <argument type="service" id="quickpay_payment.repository" />
+            <argument type="service" id="language.repository" />
+            <argument type="service" id="router" />
+        </service>
+        
+        <service id="QuickPay\Service\QuickPayPaymentMethod">
+            <argument type="service" id="QuickPay\Service\QuickPayService" />
+            <tag name="shopware.payment.method.async" />
+        </service>
+        
+        <service id="QuickPay\Controller\StorefrontController" public="true">
+            <argument type="service" id="QuickPay\Service\QuickPayService" />
+        </service>
+        
+        <service id="QuickPay\Controller\AdministrationController" public="true">
+            <argument type="service" id="QuickPay\Service\QuickPayService" />
+        </service>
+                
+        <service id="QuickPay\Entity\QuickPayPaymentDefinition">
+            <tag name="shopware.entity.definition" entity="quickpay_payment" />
+        </service>
+                
+        <service id="QuickPay\Entity\QuickPayPaymentOperationDefinition">
+            <tag name="shopware.entity.definition" entity="quickpay_payment_operation" />
+        </service>
+        
+        <service id="QuickPay\Extension\OrderTransactionExtension">
+            <tag name="shopware.entity.extension"/>
+        </service>
+    </services>
+</container>
