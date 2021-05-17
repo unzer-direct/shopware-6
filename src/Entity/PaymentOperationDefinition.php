@@ -15,7 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\VersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
-class QuickPayPaymentOperationDefinition extends EntityDefinition
+class PaymentOperationDefinition extends EntityDefinition
 {
     public function getEntityName(): string {
         return 'quickpay_payment_operation';
@@ -23,20 +23,20 @@ class QuickPayPaymentOperationDefinition extends EntityDefinition
 
     public function getEntityClass(): string
     {
-        return QuickPayPaymentOperationEntity::class;
+        return PaymentOperationEntity::class;
     }
     
     public function getCollectionClass(): string
     {
-        return QuickPayPaymentOperationCollection::class;
+        return PaymentOperationCollection::class;
     }
     
     protected function defineFields(): FieldCollection {
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
             new VersionField(),
-            (new FkField('quickpay_payment_id', 'quickpayPaymentId', QuickPayPaymentDefinition::class))->addFlags(new Required()),
-            (new ReferenceVersionField(QuickPayPaymentDefinition::class, 'quickpay_payment_version_id'))->addFlags(new Required()),
+            (new FkField('quickpay_payment_id', 'quickpayPaymentId', PaymentDefinition::class))->addFlags(new Required()),
+            (new ReferenceVersionField(PaymentDefinition::class, 'quickpay_payment_version_id'))->addFlags(new Required()),
             
             (new IntField('quickpay_operation_id', 'quickpayOperationId')),
             (new StringField('type', 'type'))->addFlags(new Required()),
@@ -44,7 +44,7 @@ class QuickPayPaymentOperationDefinition extends EntityDefinition
             (new IntField('amount', 'amount'))->addFlags(new Required()),
             (new JsonField('raw_json', 'rawJson'))->addFlags(new Required()),
             
-            new ManyToOneAssociationField('payment', 'quickpay_payment_id', QuickPayPaymentDefinition::class),
+            new ManyToOneAssociationField('payment', 'quickpay_payment_id', PaymentDefinition::class),
         ]);
     }
 

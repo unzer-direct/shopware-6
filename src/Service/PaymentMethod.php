@@ -11,16 +11,16 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class QuickPayPaymentMethod implements AsynchronousPaymentHandlerInterface
+class PaymentMethod implements AsynchronousPaymentHandlerInterface
 {
     /**
-     * @var QuickPayService
+     * @var PaymentService
      */
-    private $quickpayService;
+    private $paymentService;
     
-    public function __construct(QuickPayService $quickpayService)
+    public function __construct(PaymentService $paymentService)
     {
-        $this->quickpayService = $quickpayService;
+        $this->paymentService = $paymentService;
     }
     
     public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
@@ -29,7 +29,7 @@ class QuickPayPaymentMethod implements AsynchronousPaymentHandlerInterface
         
         try{
             
-            $url = $this->quickpayService->createOrUpdatePayment($transactionId, $transaction->getReturnUrl(), $salesChannelContext);
+            $url = $this->paymentService->createOrUpdatePayment($transactionId, $transaction->getReturnUrl(), $salesChannelContext);
             
         } catch (\Exception $e) {
             throw new AsyncPaymentProcessException($transactionId, $e->getMessage());
@@ -47,7 +47,7 @@ class QuickPayPaymentMethod implements AsynchronousPaymentHandlerInterface
         
         try {
           
-            $this->quickpayService->updateTransaction($transactionId, $salesChannelContext->getContext());
+            $this->paymentService->updateTransaction($transactionId, $salesChannelContext->getContext());
             
         } catch (Exception $ex) {
             throw new CustomerCanceledAsyncPaymentException($transaction->getOrderTransaction()->getId());

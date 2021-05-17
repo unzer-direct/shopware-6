@@ -7,7 +7,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEnti
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
-class QuickPayPaymentEntity extends Entity
+class PaymentEntity extends Entity
 {
     use EntityIdTrait;
     
@@ -86,7 +86,7 @@ class QuickPayPaymentEntity extends Entity
     protected $authorizedAt;
     
     /**
-     * @var QuickPayPaymentOperationCollection List of operations
+     * @var PaymentOperationCollection List of operations
      */
     protected $operations;
     
@@ -191,7 +191,7 @@ class QuickPayPaymentEntity extends Entity
 
     /**
      * Get the List of linked operations
-     * @return QuickPayPaymentOperationCollection operations for the payment
+     * @return PaymentOperationCollection operations for the payment
      */
     public function getOperations()
     {

@@ -2,7 +2,7 @@
 
 namespace QuickPay;
 
-use QuickPay\Service\QuickPayPaymentMethod;
+use QuickPay\Service\PaymentMethod;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -53,7 +53,7 @@ public function install(InstallContext $context): void
 
         $quickpayPaymentData = [
             // payment handler will be selected by the identifier
-            'handlerIdentifier' => QuickPayPaymentMethod::class,
+            'handlerIdentifier' => PaymentMethod::class,
             'description' => 'Pay using the QuickPay payment service provider.',
             'name' => 'QuickPay',
             'pluginId' => $pluginId,

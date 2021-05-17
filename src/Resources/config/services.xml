@@ -6,7 +6,7 @@
 
     <services>
         
-        <service id="QuickPay\Service\QuickPayService">
+        <service id="QuickPay\Service\PaymentService">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry"/>
             <argument type="service" id="order_transaction.repository" />
@@ -16,24 +16,24 @@
             <argument type="service" id="router" />
         </service>
         
-        <service id="QuickPay\Service\QuickPayPaymentMethod">
-            <argument type="service" id="QuickPay\Service\QuickPayService" />
+        <service id="QuickPay\Service\PaymentMethod">
+            <argument type="service" id="QuickPay\Service\PaymentService" />
             <tag name="shopware.payment.method.async" />
         </service>
         
         <service id="QuickPay\Controller\StorefrontController" public="true">
-            <argument type="service" id="QuickPay\Service\QuickPayService" />
+            <argument type="service" id="QuickPay\Service\PaymentService" />
         </service>
         
         <service id="QuickPay\Controller\AdministrationController" public="true">
-            <argument type="service" id="QuickPay\Service\QuickPayService" />
+            <argument type="service" id="QuickPay\Service\PaymentService" />
         </service>
                 
-        <service id="QuickPay\Entity\QuickPayPaymentDefinition">
+        <service id="QuickPay\Entity\PaymentDefinition">
             <tag name="shopware.entity.definition" entity="quickpay_payment" />
         </service>
                 
-        <service id="QuickPay\Entity\QuickPayPaymentOperationDefinition">
+        <service id="QuickPay\Entity\PaymentOperationDefinition">
             <tag name="shopware.entity.definition" entity="quickpay_payment_operation" />
         </service>
         
