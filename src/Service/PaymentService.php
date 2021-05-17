@@ -26,7 +26,7 @@ use Symfony\Component\Routing\RouterInterface;
 
 class PaymentService
 {
-    private $baseUrl = 'https://api.unzerdirect.net';
+    private $baseUrl = 'https://api.unzerdirect.com';
 
     const METHOD_POST = 'POST';
     const METHOD_PUT = 'PUT';
