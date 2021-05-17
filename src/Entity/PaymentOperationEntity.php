@@ -6,11 +6,11 @@ use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
-class QuickPayPaymentOperationEntity extends Entity
+class PaymentOperationEntity extends Entity
 {
     use EntityIdTrait;
     /**
-     * @var QuickPayPaymentEntity linked QuickPay payment
+     * @var PaymentEntity linked QuickPay payment
      */
     protected $payment;
     
@@ -60,7 +60,7 @@ class QuickPayPaymentOperationEntity extends Entity
     }
     /**
      * Get the linked payment
-     * @return QuickPayPaymentEntity
+     * @return PaymentEntity
      */
     public function getPayment()
     {

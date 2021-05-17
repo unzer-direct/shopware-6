@@ -3,7 +3,7 @@
 namespace QuickPay\Controller;
 
 use Exception;
-use QuickPay\Service\QuickPayService;
+use QuickPay\Service\PaymentService;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,13 +16,13 @@ use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 class StorefrontController
 {
     /**
-     * @var QuickPayService
+     * @var PaymentService
      */
-    private $quickpayService;
+    private $paymentService;
     
-    public function __construct(QuickPayService $quickpayService)
+    public function __construct(PaymentService $paymentService)
     {
-        $this->quickpayService = $quickpayService;
+        $this->paymentService = $paymentService;
     }
 
     /**
@@ -41,9 +41,9 @@ class StorefrontController
                 throw new Exception('Invalid request body');
             
             
-            $this->quickpayService->validateChecksum($paymentId, $request, $context);
+            $this->paymentService->validateChecksum($paymentId, $request, $context);
             
-            $this->quickpayService->updateTransaction($transactionId, $context->getContext(), $paymentData);
+            $this->paymentService->updateTransaction($transactionId, $context->getContext(), $paymentData);
             
         } catch (Exception $e) {
             return new Response($e->getMessage(), 400);

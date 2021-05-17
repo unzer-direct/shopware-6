@@ -2,7 +2,7 @@
 
 namespace QuickPay\Extension;
 
-use QuickPay\Entity\QuickPayPaymentDefinition;
+use QuickPay\Entity\PaymentDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityExtension;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\CascadeDelete;
@@ -14,7 +14,7 @@ class OrderTransactionExtension extends EntityExtension
     public function extendFields(FieldCollection $collection): void
     {
         $collection->add(
-            (new OneToOneAssociationField('quickpayPayment', 'id', 'transaction_id', QuickPayPaymentDefinition::class, false))
+            (new OneToOneAssociationField('quickpayPayment', 'id', 'transaction_id', PaymentDefinition::class, false))
                 ->addFlags(new CascadeDelete())
         );
     }

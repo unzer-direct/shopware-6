@@ -4,7 +4,7 @@ namespace QuickPay\Service;
 
 use Exception;
 use Monolog\Logger;
-use QuickPay\Entity\QuickPayPaymentEntity;
+use QuickPay\Entity\PaymentEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-class QuickPayService
+class PaymentService
 {
     private $baseUrl = 'https://api.quickpay.net';
 
@@ -116,10 +116,10 @@ class QuickPayService
         
         if($transaction->hasExtension('quickpayPayment'))
         {
-            /** @var QuickPayPaymentEntity $payment */
+            /** @var PaymentEntity $payment */
             $payment = $transaction->getExtension('quickpayPayment');
             
-            if($payment->getStatus() !== QuickPayPaymentEntity::PAYMENT_CREATED) {
+            if($payment->getStatus() !== PaymentEntity::PAYMENT_CREATED) {
                 throw new Exception('Payment already processed');
             }
             
@@ -239,7 +239,7 @@ class QuickPayService
     public function findTransactionId(string $paymentId, Context $context)
     {
         $criteria = new Criteria([$paymentId]);
-        /** @var QuickPayPaymentEntity $payment */
+        /** @var PaymentEntity $payment */
         $payment = $this->paymentRepository->search($criteria, $context)->first();
         
         if(!$payment)
@@ -270,7 +270,7 @@ class QuickPayService
         
         $salesChannelId = $transaction->getOrder()->getSalesChannelId();
         
-        /** @var QuickPayPaymentEntity $payment */
+        /** @var PaymentEntity $payment */
         $payment = $transaction->getExtension('quickpayPayment');
         
         if(!$paymentData)
@@ -313,7 +313,7 @@ class QuickPayService
      * 
      * @param object $payment
      */
-    private function updatePaymentOperations(QuickPayPaymentEntity $payment, object $paymentData, Context $context)
+    private function updatePaymentOperations(PaymentEntity $payment, object $paymentData, Context $context)
     {
         $operations = $payment->getOperations();
         
@@ -346,11 +346,11 @@ class QuickPayService
     /**
      * Update the status of the QuickPay payment according to the operations
      * 
-     * @param QuickPayPaymentEntity $payment
+     * @param PaymentEntity $payment
      * @param Context $context
      * @return int new quickpay payment status
      */
-    private function updateStatus(QuickPayPaymentEntity $payment, Context $context): int
+    private function updateStatus(PaymentEntity $payment, Context $context): int
     {
         $previousStatus = $payment->getStatus();
         
@@ -369,7 +369,7 @@ class QuickPayService
         $amountAuthorized = 0;
         $amountCaptured = 0;
         $amountRefunded = 0;
-        $status = QuickPayPaymentEntity::PAYMENT_CREATED;
+        $status = PaymentEntity::PAYMENT_CREATED;
         
         /** @var QuickPayPaymentOperation $operation */
         foreach($operations as $operation)
@@ -384,14 +384,14 @@ class QuickPayService
 
                         if($amount <= $amountAuthorized)
                         {
-                            $status = QuickPayPaymentEntity::PAYMENT_FULLY_AUTHORIZED;
+                            $status = PaymentEntity::PAYMENT_FULLY_AUTHORIZED;
                         }
                     }
                     break;
 
                 case 'capture_request':
                     
-                    $status = QuickPayPaymentEntity::PAYMENT_CAPTURE_REQUESTED;
+                    $status = PaymentEntity::PAYMENT_CAPTURE_REQUESTED;
 
                     break;
 
@@ -402,46 +402,46 @@ class QuickPayService
 
                         if($amount <= $amountCaptured)
                         {
-                            $status = QuickPayPaymentEntity::PAYMENT_FULLY_CAPTURED;
+                            $status = PaymentEntity::PAYMENT_FULLY_CAPTURED;
                         }
                         else
                         {
-                            $status = QuickPayPaymentEntity::PAYMENT_PARTLY_CAPTURED;
+                            $status = PaymentEntity::PAYMENT_PARTLY_CAPTURED;
                         }
                     }
                     else if($operation->isFinished())
                     {
                         if($amountCaptured > 0)
                         {
-                            $status = QuickPayPaymentEntity::PAYMENT_PARTLY_CAPTURED;
+                            $status = PaymentEntity::PAYMENT_PARTLY_CAPTURED;
                         }
                         else
                         {
-                            $status = QuickPayPaymentEntity::PAYMENT_FULLY_AUTHORIZED;
+                            $status = PaymentEntity::PAYMENT_FULLY_AUTHORIZED;
                         }
                     }
                     break;
 
                 case 'cancel_request':
-                    $status = QuickPayPaymentEntity::PAYMENT_CANCEL_REQUSTED;
+                    $status = PaymentEntity::PAYMENT_CANCEL_REQUSTED;
 
                     break;
 
                 case 'cancel':
                     if($operation->isSuccessfull())
                     {
-                        $status = QuickPayPaymentEntity::PAYMENT_CANCELLED;
+                        $status = PaymentEntity::PAYMENT_CANCELLED;
                     }
                     else if($operation->isFinished())
                     {
-                        $status = QuickPayPaymentEntity::PAYMENT_FULLY_AUTHORIZED;
+                        $status = PaymentEntity::PAYMENT_FULLY_AUTHORIZED;
                     }
 
                     break;
 
                 case 'refund_request':
 
-                    $status = QuickPayPaymentEntity::PAYMENT_REFUND_REQUSTED;
+                    $status = PaymentEntity::PAYMENT_REFUND_REQUSTED;
 
                     break;
 
@@ -452,28 +452,28 @@ class QuickPayService
 
                         if($amountCaptured <= $amountRefunded)
                         {
-                            $status = QuickPayPaymentEntity::PAYMENT_FULLY_REFUNDED;
+                            $status = PaymentEntity::PAYMENT_FULLY_REFUNDED;
                         }
                         else
                         {
-                            $status = QuickPayPaymentEntity::PAYMENT_PARTLY_REFUNDED;
+                            $status = PaymentEntity::PAYMENT_PARTLY_REFUNDED;
                         }
                     }
                     else
                     {
                         if($amountRefunded > 0)
                         {
-                            $status = QuickPayPaymentEntity::PAYMENT_PARTLY_REFUNDED;
+                            $status = PaymentEntity::PAYMENT_PARTLY_REFUNDED;
                         }
                         else
                         {
                             if($amountCaptured < $amount)
                             {
-                                $status = QuickPayPaymentEntity::PAYMENT_PARTLY_CAPTURED;
+                                $status = PaymentEntity::PAYMENT_PARTLY_CAPTURED;
                             }
                             else
                             {
-                                $status = QuickPayPaymentEntity::PAYMENT_FULLY_CAPTURED;
+                                $status = PaymentEntity::PAYMENT_FULLY_CAPTURED;
                             }
                         }
                     }
@@ -482,7 +482,7 @@ class QuickPayService
 
                 case 'checksum_failure':
                 case 'test_mode_violation':
-                    $status = QuickPayPaymentEntity::PAYMENT_INVALIDATED;
+                    $status = PaymentEntity::PAYMENT_INVALIDATED;
                     break;
 
                 default:
@@ -508,25 +508,25 @@ class QuickPayService
         $action = false;
         switch($paymentStatus)
         {
-            case QuickPayPaymentEntity::PAYMENT_FULLY_AUTHORIZED:
+            case PaymentEntity::PAYMENT_FULLY_AUTHORIZED:
                 $action = StateMachineTransitionActions::ACTION_AUTHORIZE;
                 break;
-            case QuickPayPaymentEntity::PAYMENT_PARTLY_CAPTURED:
+            case PaymentEntity::PAYMENT_PARTLY_CAPTURED:
                 $action = StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
                 break;
-            case QuickPayPaymentEntity::PAYMENT_FULLY_CAPTURED:
+            case PaymentEntity::PAYMENT_FULLY_CAPTURED:
                 $action = StateMachineTransitionActions::ACTION_DO_PAY;
                 break;
-            case QuickPayPaymentEntity::PAYMENT_CANCELLED:
+            case PaymentEntity::PAYMENT_CANCELLED:
                 $action = StateMachineTransitionActions::ACTION_CANCEL;
                 break;
-            case QuickPayPaymentEntity::PAYMENT_PARTLY_REFUNDED:
+            case PaymentEntity::PAYMENT_PARTLY_REFUNDED:
                 $action = StateMachineTransitionActions::ACTION_REFUND_PARTIALLY;
                 break;
-            case QuickPayPaymentEntity::PAYMENT_FULLY_REFUNDED:
+            case PaymentEntity::PAYMENT_FULLY_REFUNDED:
                 $action = StateMachineTransitionActions::ACTION_REFUND;
                 break;
-            case QuickPayPaymentEntity::PAYMENT_INVALIDATED:
+            case PaymentEntity::PAYMENT_INVALIDATED:
                 $action = StateMachineTransitionActions::ACTION_FAIL;
                 break;
             
@@ -583,7 +583,7 @@ class QuickPayService
     {
         $criteria = new Criteria([$paymentId]);
         $criteria->addAssociation('transaction.order');
-        /** @var QuickPayPaymentEntity $payment */
+        /** @var PaymentEntity $payment */
         $payment = $this->paymentRepository->search($criteria, $context)
             ->first();
         
@@ -592,8 +592,8 @@ class QuickPayService
         
         $salesChannelId = $payment->getTransaction()->getOrder()->getSalesChannelId();
         
-        if($payment->getStatus() != QuickPayPaymentEntity::PAYMENT_FULLY_AUTHORIZED
-            && $payment->getStatus() != QuickPayPaymentEntity::PAYMENT_PARTLY_CAPTURED)
+        if($payment->getStatus() != PaymentEntity::PAYMENT_FULLY_AUTHORIZED
+            && $payment->getStatus() != PaymentEntity::PAYMENT_PARTLY_CAPTURED)
         {
             throw new Exception('Invalid payment state');
         }
@@ -638,7 +638,7 @@ class QuickPayService
     {
         $criteria = new Criteria([$paymentId]);
         $criteria->addAssociation('transaction.order');
-        /** @var QuickPayPaymentEntity $payment */
+        /** @var PaymentEntity $payment */
         $payment = $this->paymentRepository->search($criteria, $context)
             ->first();
         
@@ -647,8 +647,8 @@ class QuickPayService
         
         $salesChannelId = $payment->getTransaction()->getOrder()->getSalesChannelId();
         
-        if($payment->getStatus() != QuickPayPaymentEntity::PAYMENT_FULLY_AUTHORIZED
-            && $payment->getStatus() != QuickPayPaymentEntity::PAYMENT_CREATED)
+        if($payment->getStatus() != PaymentEntity::PAYMENT_FULLY_AUTHORIZED
+            && $payment->getStatus() != PaymentEntity::PAYMENT_CREATED)
         {
             throw new Exception('Invalid payment state');
         }
@@ -690,7 +690,7 @@ class QuickPayService
     {
         $criteria = new Criteria([$paymentId]);
         $criteria->addAssociation('transaction.order');
-        /** @var QuickPayPaymentEntity $payment */
+        /** @var PaymentEntity $payment */
         $payment = $this->paymentRepository->search($criteria, $context)
             ->first();
         
@@ -699,9 +699,9 @@ class QuickPayService
         
         $salesChannelId = $payment->getTransaction()->getOrder()->getSalesChannelId();
         
-        if($payment->getStatus() != QuickPayPaymentEntity::PAYMENT_FULLY_CAPTURED
-            && $payment->getStatus() != QuickPayPaymentEntity::PAYMENT_PARTLY_CAPTURED
-            && $payment->getStatus() != QuickPayPaymentEntity::PAYMENT_PARTLY_REFUNDED)
+        if($payment->getStatus() != PaymentEntity::PAYMENT_FULLY_CAPTURED
+            && $payment->getStatus() != PaymentEntity::PAYMENT_PARTLY_CAPTURED
+            && $payment->getStatus() != PaymentEntity::PAYMENT_PARTLY_REFUNDED)
         {
             throw new Exception('Invalid payment state');
         }

@@ -17,7 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\VersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
-class QuickPayPaymentDefinition extends EntityDefinition
+class PaymentDefinition extends EntityDefinition
 {
     public function getEntityName(): string {
         return 'quickpay_payment';
@@ -25,12 +25,12 @@ class QuickPayPaymentDefinition extends EntityDefinition
 
     public function getEntityClass(): string
     {
-        return QuickPayPaymentEntity::class;
+        return PaymentEntity::class;
     }
     
     public function getCollectionClass(): string
     {
-        return QuickPayPaymentCollection::class;
+        return PaymentCollection::class;
     }
     
     protected function getParentDefinitionClass(): ?string
@@ -60,7 +60,7 @@ class QuickPayPaymentDefinition extends EntityDefinition
             new DateTimeField('authorized_at', 'authorizedAt'),
             
             (new OneToOneAssociationField('transaction', 'transaction_id', 'id', OrderTransactionDefinition::class, false)),
-            new OneToManyAssociationField('operations', QuickPayPaymentOperationDefinition::class, 'quickpay_payment_id'),
+            new OneToManyAssociationField('operations', PaymentOperationDefinition::class, 'quickpay_payment_id'),
         ]);
     }
 
