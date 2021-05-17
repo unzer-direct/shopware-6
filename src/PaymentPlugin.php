@@ -14,7 +14,7 @@ use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 
-class QuickPayPayment extends Plugin
+class PaymentPlugin extends Plugin
 {
 public function install(InstallContext $context): void
     {
@@ -51,7 +51,7 @@ public function install(InstallContext $context): void
         $pluginIdProvider = $this->container->get(PluginIdProvider::class);
         $pluginId = $pluginIdProvider->getPluginIdByBaseClass(get_class($this), $context);
 
-        $quickpayPaymentData = [
+        $paymentData = [
             // payment handler will be selected by the identifier
             'handlerIdentifier' => PaymentMethod::class,
             'description' => 'Pay using the QuickPay payment service provider.',
@@ -61,7 +61,7 @@ public function install(InstallContext $context): void
 
         /** @var EntityRepositoryInterface $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
-        $paymentRepository->create([$quickpayPaymentData], $context);
+        $paymentRepository->create([$paymentData], $context);
     }
 
     private function setPaymentMethodIsActive(bool $active, Context $context): void
@@ -90,7 +90,7 @@ public function install(InstallContext $context): void
         $paymentRepository = $this->container->get('payment_method.repository');
 
         // Fetch ID for update
-        $paymentCriteria = (new Criteria())->addFilter(new EqualsFilter('handlerIdentifier', QuickPayPaymentMethod::class));
+        $paymentCriteria = (new Criteria())->addFilter(new EqualsFilter('handlerIdentifier', PaymentMethod::class));
         return $paymentRepository->searchIds($paymentCriteria, Context::createDefaultContext())->firstId();
     }
 }
