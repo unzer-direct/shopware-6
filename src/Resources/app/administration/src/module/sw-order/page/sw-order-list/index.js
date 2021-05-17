@@ -5,7 +5,7 @@ const { Component } = Shopware;
 Component.override('sw-order-list', {
     template,
 
-    inject: ['quickpayApiService', 'acl'],
+    inject: ['unzerdirectApiService', 'acl'],
 
     data() {
         return {
@@ -18,7 +18,7 @@ Component.override('sw-order-list', {
     computed: {
         orderCriteria() {
             const criteria = this.$super('orderCriteria');
-            criteria.addAssociation('transactions.quickpayPayment');
+            criteria.addAssociation('transactions.unzerdirectPayment');
 
             return criteria;
         }
@@ -29,9 +29,9 @@ Component.override('sw-order-list', {
             const columns = this.$super('getOrderColumns');
             
             columns.push({
-                property: 'transactions.last().extensions.quickpayPayment',
-                dataIndex: 'transactions.quickpayPayment',
-                label: 'sw-order.list.columnQuickpayActions',
+                property: 'transactions.last().extensions.unzerdirectPayment',
+                dataIndex: 'transactions.unzerdirectPayment',
+                label: 'sw-order.list.columnUnzerDirectActions',
                 allowResize: true,
                 sortable: false
             });
@@ -39,11 +39,11 @@ Component.override('sw-order-list', {
             return columns;
         },
         
-        quickpayCanCapture(item) {
+        unzerdirectCanCapture(item) {
             if(!item.transactions.last().extensions)
                 return
             
-            const payment = item.transactions.last().extensions.quickpayPayment;
+            const payment = item.transactions.last().extensions.unzerdirectPayment;
             if(!payment)
                 return;
             
@@ -51,11 +51,11 @@ Component.override('sw-order-list', {
                 || payment.status === 12; // Partially captured
         },
         
-        quickpayCanCancel(item) {
+        unzerdirectCanCancel(item) {
             if(!item.transactions.last().extensions)
                 return
             
-            const payment = item.transactions.last().extensions.quickpayPayment;
+            const payment = item.transactions.last().extensions.unzerdirectPayment;
             if(!payment)
                 return;
             
@@ -63,11 +63,11 @@ Component.override('sw-order-list', {
                 || payment.status === 0; // Created
         },
         
-        quickpayCanRefund(item) {
+        unzerdirectCanRefund(item) {
             if(!item.transactions.last().extensions)
                 return
             
-            const payment = item.transactions.last().extensions.quickpayPayment;
+            const payment = item.transactions.last().extensions.unzerdirectPayment;
             if(!payment)
                 return;
             

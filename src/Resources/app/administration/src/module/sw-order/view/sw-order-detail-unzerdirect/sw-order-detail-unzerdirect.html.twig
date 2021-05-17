@@ -1,27 +1,27 @@
 <sw-card-view v-if="order && !isLoading" class="sw-order-detail-base">
-    <sw-order-quickpay-capture-modal
+    <sw-order-unzerdirect-capture-modal
         v-if="showCaptureModal"
-        :payment="quickpayPayment"
+        :payment="unzerdirectPayment"
         :currency="currency"
         @success="onModalClosed('success')"
         @fail="onModalClosed('fail')"
         @close="onModalClosed('closed')">
-    </sw-order-quickpay-capture-modal>
-    <sw-order-quickpay-cancel-modal
+    </sw-order-unzerdirect-capture-modal>
+    <sw-order-unzerdirect-cancel-modal
         v-if="showCancelModal"
-        :payment="quickpayPayment"
+        :payment="unzerdirectPayment"
         @success="onModalClosed('success')"
         @fail="onModalClosed('fail')"
         @close="onModalClosed('closed')">
-    </sw-order-quickpay-cancel-modal>
-    <sw-order-quickpay-refund-modal
+    </sw-order-unzerdirect-cancel-modal>
+    <sw-order-unzerdirect-refund-modal
         v-if="showRefundModal"
-        :payment="quickpayPayment"
+        :payment="unzerdirectPayment"
         :currency="currency"
         @success="onModalClosed('success')"
         @fail="onModalClosed('fail')"
         @close="onModalClosed('closed')">
-    </sw-order-quickpay-refund-modal>
+    </sw-order-unzerdirect-refund-modal>
     
     <sw-card class="sw-order-user-card"
         :isLoading="isLoading">
@@ -36,7 +36,7 @@
                     align="center">
                     <div class="sw-order-user-card__metadata">
                         <div class="sw-order-user-card__metadata-user-name">
-                            {{ $tc('sw-order.quickpay.paymentId') }} {{ quickpayPayment.quickpayId }}
+                            {{ $tc('sw-order.unzerdirect.paymentId') }} {{ unzerdirectPayment.unzerdirectId }}
                         </div>
                     </div>
                     <div class="sw-order-user-card__info-summary">
@@ -49,16 +49,16 @@
                 <sw-container columns="repeat(auto-fit, minmax(250px, 1fr))" gap="30px 30px">
                     
                     <sw-description-list columns="1fr" grid="1fr" class="sw-order-user-card__summary-vertical">
-                        <dt>{{ $tc('sw-order.quickpay.amountTotal') }}</dt>
+                        <dt>{{ $tc('sw-order.unzerdirect.amountTotal') }}</dt>
                         <dd> {{ amountTotal }} {{ currency.symbol }}</dd>
-                        <dt>{{ $tc('sw-order.quickpay.amountRefunded') }}</dt>
+                        <dt>{{ $tc('sw-order.unzerdirect.amountRefunded') }}</dt>
                         <dd> {{ amountRefunded }} {{ currency.symbol }}</dd>
                     </sw-description-list>
                     
                     <sw-description-list columns="1fr" grid="1fr" class="sw-order-user-card__summary-vertical">
-                        <dt>{{ $tc('sw-order.quickpay.amountAuthorized') }}</dt>
+                        <dt>{{ $tc('sw-order.unzerdirect.amountAuthorized') }}</dt>
                         <dd> {{ amountAuthorized }} {{ currency.symbol }}</dd>
-                        <dt>{{ $tc('sw-order.quickpay.amountCaptured') }}</dt>
+                        <dt>{{ $tc('sw-order.unzerdirect.amountCaptured') }}</dt>
                         <dd> {{ amountCaptured }} {{ currency.symbol }}</dd>
                     </sw-description-list>
                     
@@ -67,37 +67,37 @@
             <sw-card-section divider="bottom">
                 <sw-container columns="20% 20% 20% 20%" gap="30px 30px">
                     <sw-button
-                        :aria-label="$tc('sw-order.quickpay.capture')"
+                        :aria-label="$tc('sw-order.unzerdirect.capture')"
                         @click="showCaptureModal = true"
                         :disabled="!acl.can('order.editor') || !canCapture">
                             <sw-icon name="small-default-checkmark-line-medium" size="14px"></sw-icon>
-                            {{ $tc('sw-order.quickpay.capture') }}
+                            {{ $tc('sw-order.unzerdirect.capture') }}
                     </sw-button>
                     <sw-button
-                        :aria-label="$tc('sw-order.quickpay.cancel')"
+                        :aria-label="$tc('sw-order.unzerdirect.cancel')"
                         @click="showCancelModal = true"
                         :disabled="!acl.can('order.editor') || !canCancel">
                             <sw-icon name="small-default-x-line-medium" size="14px"></sw-icon>
-                            {{ $tc('sw-order.quickpay.cancel') }}
+                            {{ $tc('sw-order.unzerdirect.cancel') }}
                     </sw-button>
                     <sw-button
-                        :aria-label="$tc('sw-order.quickpay.refund')"
+                        :aria-label="$tc('sw-order.unzerdirect.refund')"
                         @click="showRefundModal = true"
                         :disabled="!acl.can('order.editor') || !canRefund">
                             <sw-icon name="text-editor-undo" size="14px"></sw-icon>
-                            {{ $tc('sw-order.quickpay.refund') }}
+                            {{ $tc('sw-order.unzerdirect.refund') }}
                     </sw-button>
                     <sw-button
-                        :aria-label="$tc('sw-order.quickpay.refresh')"
+                        :aria-label="$tc('sw-order.unzerdirect.refresh')"
                         @click="refresh()">
                             <sw-icon name="default-arrow-360-right" size="14px"></sw-icon>
-                            {{ $tc('sw-order.quickpay.refresh') }}
+                            {{ $tc('sw-order.unzerdirect.refresh') }}
                     </sw-button>
                 </sw-container>
             </sw-card-section>
         </sw-card>
         <sw-card class="sw-order-user-card"
-            :label="$tc('sw-order.quickpay.operations')"
+            :label="$tc('sw-order.unzerdirect.operations')"
             :isLoading="isLoading">
             <sw-card-section divider="bottom">
                     <sw-data-grid
@@ -109,7 +109,7 @@
                         :showActions="false"
                         :allowColumnEdit="false"
                         :allowInlineEdit="false"
-                        identifier="sw-order-quickpay-grid">
+                        identifier="sw-order-unzerdirect-grid">
                         
                         <template #column-type="{ item }">
                             {{ getTypeName(item) }}

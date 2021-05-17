@@ -1,13 +1,13 @@
 import ApiService from 'src/core/service/api.service';
 
-export default class QuickpayApiService extends ApiService {
-    constructor(httpClient, loginService, apiEndpoint = 'quickpay') {
+export default class UnzerDirectApiService extends ApiService {
+    constructor(httpClient, loginService, apiEndpoint = 'unzerdirect') {
         super(httpClient, loginService, apiEndpoint);
-        this.name = 'quickpayService';
+        this.name = 'unzerdirectService';
     }
     
     async capture(id, amount) {
-        return await this.httpClient.post('_action/quickpay/capture', {
+        return await this.httpClient.post('_action/unzerdirect/capture', {
             id: id,
             amount: amount
         },{
@@ -16,7 +16,7 @@ export default class QuickpayApiService extends ApiService {
     }
     
     async cancel(id) {
-        return await this.httpClient.post('_action/quickpay/cancel', {
+        return await this.httpClient.post('_action/unzerdirect/cancel', {
             id: id,
         },{
             headers: this.getBasicHeaders()
@@ -24,7 +24,7 @@ export default class QuickpayApiService extends ApiService {
     }
     
     async refund(id, amount) {
-        return await this.httpClient.post('_action/quickpay/refund', {
+        return await this.httpClient.post('_action/unzerdirect/refund', {
             id: id,
             amount: amount
         },{
@@ -33,7 +33,7 @@ export default class QuickpayApiService extends ApiService {
     }
     
     async refresh(id) {
-        return await this.httpClient.post('_action/quickpay/refresh', {
+        return await this.httpClient.post('_action/unzerdirect/refresh', {
             id: id,
         },{
             headers: this.getBasicHeaders()

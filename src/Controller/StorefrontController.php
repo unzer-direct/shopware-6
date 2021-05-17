@@ -1,9 +1,9 @@
 <?php
 
-namespace QuickPay\Controller;
+namespace UnzerDirect\Controller;
 
 use Exception;
-use QuickPay\Service\PaymentService;
+use UnzerDirect\Service\PaymentService;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +26,7 @@ class StorefrontController
     }
 
     /**
-     * @Route("/quickpay/callback", name="quickpay.callback", defaults={"csrf_protected"=false}, options={"seo"="false"}, methods={"GET", "POST"})
+     * @Route("/unzerdirect/callback", name="unzerdirect.callback", defaults={"csrf_protected"=false}, options={"seo"="false"}, methods={"GET", "POST"})
      */
     public function callback(Request $request, SalesChannelContext $context): Response
     {

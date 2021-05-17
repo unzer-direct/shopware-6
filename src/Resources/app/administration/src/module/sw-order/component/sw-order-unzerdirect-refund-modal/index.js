@@ -1,13 +1,13 @@
-import template from './sw-order-quickpay-refund-modal.html.twig';
-import './sw-order-quickpay-refund-modal.scss';
+import template from './sw-order-unzerdirect-refund-modal.html.twig';
+import './sw-order-unzerdirect-refund-modal.scss';
 
 const { Component, Mixin} = Shopware;
 
-Component.register('sw-order-quickpay-refund-modal', {
+Component.register('sw-order-unzerdirect-refund-modal', {
     template,
 
     inject: [
-        'quickpayApiService',
+        'unzerdirectApiService',
     ],
     
     mixins: [
@@ -50,16 +50,16 @@ Component.register('sw-order-quickpay-refund-modal', {
         async onConfirm() {
             try {
                 this.isLoading = true;
-                const response = await this.quickpayApiService.refund(this.payment.id, parseInt(this.amount * 100));
+                const response = await this.unzerdirectApiService.refund(this.payment.id, parseInt(this.amount * 100));
                 this.$emit('success');
                 this.createNotificationSuccess({
-                    message: this.$tc('sw-order.quickpay.refundRequestedNotification')
+                    message: this.$tc('sw-order.unzerdirect.refundRequestedNotification')
                 })
                 this.isLoading = false;
             } catch(e) {
                 this.$emit('fail');
                 this.createNotificationError({
-                    message: this.$tc('sw-order.quickpay.refundRequestFailedNotification')
+                    message: this.$tc('sw-order.unzerdirect.refundRequestFailedNotification')
                 })
                 this.isLoading = false;
             }

@@ -1,10 +1,10 @@
 import './module/sw-order'
-import QuickpayApiService from './core/service/quickpay.api.service'
+import UnzerDirectApiService from './core/service/unzerdirect.api.service'
 
 const { Application } = Shopware;
 
-Application.addServiceProvider('quickpayApiService', () => {
-    return new QuickpayApiService(
+Application.addServiceProvider('unzerdirectApiService', () => {
+    return new UnzerDirectApiService(
         Shopware.Application.getContainer('init').httpClient,
         Shopware.Service('loginService')
     );

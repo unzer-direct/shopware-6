@@ -11,8 +11,8 @@ Component.override('sw-order-detail', {
             return true;
         },
         
-        quickpayActive() {
-            return this.$route.name === 'sw.order.detail.quickpay'
+        unzerdirectActive() {
+            return this.$route.name === 'sw.order.detail.unzerdirect'
         }
     },
 });

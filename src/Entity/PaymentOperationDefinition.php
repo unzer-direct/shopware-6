@@ -1,6 +1,6 @@
 <?php
 
-namespace QuickPay\Entity;
+namespace UnzerDirect\Entity;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
@@ -18,7 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 class PaymentOperationDefinition extends EntityDefinition
 {
     public function getEntityName(): string {
-        return 'quickpay_payment_operation';
+        return 'unzerdirect_payment_operation';
     }
 
     public function getEntityClass(): string
@@ -35,16 +35,16 @@ class PaymentOperationDefinition extends EntityDefinition
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
             new VersionField(),
-            (new FkField('quickpay_payment_id', 'quickpayPaymentId', PaymentDefinition::class))->addFlags(new Required()),
-            (new ReferenceVersionField(PaymentDefinition::class, 'quickpay_payment_version_id'))->addFlags(new Required()),
+            (new FkField('unzerdirect_payment_id', 'unzerdirectPaymentId', PaymentDefinition::class))->addFlags(new Required()),
+            (new ReferenceVersionField(PaymentDefinition::class, 'unzerdirect_payment_version_id'))->addFlags(new Required()),
             
-            (new IntField('quickpay_operation_id', 'quickpayOperationId')),
+            (new IntField('unzerdirect_operation_id', 'unzerdirectOperationId')),
             (new StringField('type', 'type'))->addFlags(new Required()),
             new StringField('status', 'status'),
             (new IntField('amount', 'amount'))->addFlags(new Required()),
             (new JsonField('raw_json', 'rawJson'))->addFlags(new Required()),
             
-            new ManyToOneAssociationField('payment', 'quickpay_payment_id', PaymentDefinition::class),
+            new ManyToOneAssociationField('payment', 'unzerdirect_payment_id', PaymentDefinition::class),
         ]);
     }
 

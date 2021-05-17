@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace QuickPay\Migration;
+namespace UnzerDirect\Migration;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
@@ -16,13 +16,13 @@ class Migration1612870835CreatePaymentTable extends MigrationStep
     {
         $sql = 
 <<<SQL
-    CREATE TABLE IF NOT EXISTS `quickpay_payment` (
+    CREATE TABLE IF NOT EXISTS `unzerdirect_payment` (
         `id` BINARY(16) NOT NULL,
         `version_id` BINARY(16) NOT NULL,
         `transaction_id` BINARY(16) NOT NULL,
         `transaction_version_id` BINARY(16) NOT NULL,
-        `quickpay_id` VARCHAR(50) NOT NULL,
-        `quickpay_order_id` VARCHAR(20) NOT NULL,
+        `unzerdirect_id` VARCHAR(50) NOT NULL,
+        `unzerdirect_order_id` VARCHAR(20) NOT NULL,
         `link` VARCHAR(1000) NOT NULL,
         `currency` VARCHAR(20) NOT NULL,
         `status` INT(11) NOT NULL DEFAULT 0,
@@ -34,7 +34,7 @@ class Migration1612870835CreatePaymentTable extends MigrationStep
         `created_at` DATETIME(3) NOT NULL,
         `updated_at` DATETIME(3),
         PRIMARY KEY (`id`, `version_id`),
-        CONSTRAINT `fk.quickpay.payment.transaction_id` FOREIGN KEY (`transaction_id`, `transaction_version_id`)
+        CONSTRAINT `fk.unzerdirect.payment.transaction_id` FOREIGN KEY (`transaction_id`, `transaction_version_id`)
         REFERENCES `order_transaction` (`id`, `version_id`) ON DELETE CASCADE
     )
     ENGINE = InnoDB

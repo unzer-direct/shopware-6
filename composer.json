@@ -1,19 +1,19 @@
 {
-  "name": "quickpay/payment",
-  "description": "QuickPay Payment Plugin",
+  "name": "unzerdirect/payment",
+  "description": "Unzer Direct Payment Plugin",
   "type": "shopware-platform-plugin",
   "license": "MIT",
   "version": "v1.0.0",
   "autoload": {
     "psr-4": {
-      "QuickPay\\": "src/"
+      "UnzerDirect\\": "src/"
     }
   },
   "extra": {
-    "shopware-plugin-class": "QuickPay\\PaymentPlugin",
+    "shopware-plugin-class": "UnzerDirect\\PaymentPlugin",
     "label": {
-      "de-DE": "QuickPay Payment Plugin",
-      "en-GB": "QuickPay Payment Plugin"
+      "de-DE": "Unzer Direct Payment Plugin",
+      "en-GB": "Unzer Direct Payment Plugin"
     }
   }
 }

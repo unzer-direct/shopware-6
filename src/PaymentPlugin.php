@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace QuickPay;
+namespace UnzerDirect;
 
-use QuickPay\Service\PaymentMethod;
+use UnzerDirect\Service\PaymentMethod;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -53,9 +53,9 @@ public function install(InstallContext $context): void
 
         $paymentData = [
             // payment handler will be selected by the identifier
-            'handlerIdentifier' => PaymentMethod::class,
-            'description' => 'Pay using the QuickPay payment service provider.',
-            'name' => 'QuickPay',
+            'handlerIdentifier' => tPaymentMethod::class,
+            'description' => 'Pay using the Unzer Direct payment service provider.',
+            'name' => 'Unzer Direct',
             'pluginId' => $pluginId,
         ];
 
