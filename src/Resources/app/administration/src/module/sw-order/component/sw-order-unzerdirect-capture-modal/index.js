@@ -1,13 +1,13 @@
-import template from './sw-order-quickpay-capture-modal.html.twig';
-import './sw-order-quickpay-capture-modal.scss';
+import template from './sw-order-unzerdirect-capture-modal.html.twig';
+import './sw-order-unzerdirect-capture-modal.scss';
 
 const { Component, Mixin} = Shopware;
 
-Component.register('sw-order-quickpay-capture-modal', {
+Component.register('sw-order-unzerdirect-capture-modal', {
     template,
 
     inject: [
-        'quickpayApiService',
+        'unzerdirectApiService',
     ],
     
     mixins: [
@@ -50,16 +50,16 @@ Component.register('sw-order-quickpay-capture-modal', {
         async onConfirm() {
             try {
                 this.isLoading = true;
-                const response = await this.quickpayApiService.capture(this.payment.id, parseInt(this.amount * 100));
+                const response = await this.unzerdirectApiService.capture(this.payment.id, parseInt(this.amount * 100));
                 this.$emit('success');
                 this.createNotificationSuccess({
-                    message: this.$tc('sw-order.quickpay.captureRequestedNotification')
+                    message: this.$tc('sw-order.unzerdirect.captureRequestedNotification')
                 })
                 this.isLoading = false;
             } catch(e) {
                 this.$emit('fail');
                 this.createNotificationError({
-                    message: this.$tc('sw-order.quickpay.captureRequestFailedNotification')
+                    message: this.$tc('sw-order.unzerdirect.captureRequestFailedNotification')
                 })
                 this.isLoading = false;
             }

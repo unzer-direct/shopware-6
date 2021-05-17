@@ -1,10 +1,10 @@
 <?php
 
-namespace QuickPay\Service;
+namespace UnzerDirect\Service;
 
 use Exception;
 use Monolog\Logger;
-use QuickPay\Entity\PaymentEntity;
+use UnzerDirect\Entity\PaymentEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Framework\Context;
@@ -26,7 +26,7 @@ use Symfony\Component\Routing\RouterInterface;
 
 class PaymentService
 {
-    private $baseUrl = 'https://api.quickpay.net';
+    private $baseUrl = 'https://api.unzerdirect.net';
 
     const METHOD_POST = 'POST';
     const METHOD_PUT = 'PUT';
@@ -102,7 +102,7 @@ class PaymentService
     public function createOrUpdatePayment(string $transactionId, string $returnUrl, SalesChannelContext $context)
     {
         $criteria = new Criteria([$transactionId]);
-        $criteria->addAssociations(['order', 'order.currency', 'order.orderCustomer', 'quickpayPamyent']);
+        $criteria->addAssociations(['order', 'order.currency', 'order.orderCustomer', 'unzerdirectPamyent']);
         
         /** @var OrderTransactionEntity $transaction */
         $transaction = $this->transactionRepository->search($criteria, $context->getContext())->first();
@@ -111,13 +111,13 @@ class PaymentService
             throw new Exception('Invalid transaction ID');
         }
         
-        //Create QuickPay Payment if necessary
+        //Create UnzerDirect Payment if necessary
         $currency = $transaction->getOrder()->getCurrency()->getIsoCode();
         
-        if($transaction->hasExtension('quickpayPayment'))
+        if($transaction->hasExtension('unzerdirectPayment'))
         {
             /** @var PaymentEntity $payment */
-            $payment = $transaction->getExtension('quickpayPayment');
+            $payment = $transaction->getExtension('unzerdirectPayment');
             
             if($payment->getStatus() !== PaymentEntity::PAYMENT_CREATED) {
                 throw new Exception('Payment already processed');
@@ -128,14 +128,14 @@ class PaymentService
             }
                 
             $paymentId = $payment->getId();
-            $quickpayOrderId = $payment->getQuickpayOrderId();
-            $quickpayId = $payment->getQuickpayId();
+            $unzerdirectOrderId = $payment->getUnzerDirectOrderId();
+            $unzerdirectId = $payment->getUnzerDirectId();
         }
         else
         {
             $paymentId = Uuid::randomHex();
-            $quickpayOrderId = $this->createOrderId();
-            $quickpayId = $this->createPayment($transactionId, $currency, $quickpayOrderId, $context->getSalesChannelId());
+            $unzerdirectOrderId = $this->createOrderId();
+            $unzerdirectId = $this->createPayment($transactionId, $currency, $unzerdirectOrderId, $context->getSalesChannelId());
             $isNew = true;
         }
         
@@ -151,14 +151,14 @@ class PaymentService
         /** @var LanguageEntity $language */
         $language = $this->languageRepository->search($languageCriteria, $context->getContext())->first();
         
-        $link = $this->createPaymentLink($quickpayId, $transactionId, $amount, $email, $language->getLocale()->getCode(), $returnUrl, $context->getSalesChannelId());
+        $link = $this->createPaymentLink($unzerdirectId, $transactionId, $amount, $email, $language->getLocale()->getCode(), $returnUrl, $context->getSalesChannelId());
         
         $this->transactionRepository->update([[
             'id' => $transactionId,
-            'quickpayPayment' => [
+            'unzerdirectPayment' => [
                 'id' => $paymentId,
-                'quickpayOrderId' => $quickpayOrderId,
-                'quickpayId' => "$quickpayId",
+                'unzerdirectOrderId' => $unzerdirectOrderId,
+                'unzerdirectId' => "$unzerdirectId",
                 'currency' => $currency,
                 'amount' => $amount,
                 'link' => $link
@@ -167,7 +167,7 @@ class PaymentService
         
         if($isNew)
         {
-            $this->handleNewOperation($paymentId, 'create', $context->getContext(), ['quickpay_order_id' => $quickpayOrderId]);
+            $this->handleNewOperation($paymentId, 'create', $context->getContext(), ['unzerdirect_order_id' => $unzerdirectOrderId]);
         }
         
         return $link;
@@ -201,15 +201,15 @@ class PaymentService
     /**
      * Create payment link
      *
-     * @param string $paymentId QuickPay payment ID
-     * @param string $transactionId QuickPay transactionId
+     * @param string $paymentId UnzerDirect payment ID
+     * @param string $transactionId UnzerDirect transactionId
      * @param integer $amount invoice amount of the order
      * @param string $email Mail-address of the customer
      * @param string $locale Locale of the customer
      * @param string $returnUrl Shopware return URL
      * @param string $salesChannelId
      *
-     * @return string link for QuickPay payment
+     * @return string link for UnzerDirect payment
      */
     private function createPaymentLink(string $paymentId, string $transactionId, int $amount, string $email, string $locale,  string $returnUrl, string $salesChannelId)
     {
@@ -249,7 +249,7 @@ class PaymentService
     }
     
     /**
-     * Update the state of a transaction using the quickpay payment data
+     * Update the state of a transaction using the unzerdirect payment data
      * 
      * @param string $transactionId
      * @param Context $context
@@ -259,23 +259,23 @@ class PaymentService
     public function updateTransaction(string $transactionId, Context $context, $paymentData = null)
     {
         $criteria = new Criteria([$transactionId]);
-        $criteria->addAssociations(['quickpayPayment', 'quickpayPayment.operations', 'order']);
+        $criteria->addAssociations(['unzerdirectPayment', 'unzerdirectPayment.operations', 'order']);
         
         /** @var OrderTransactionEntity $transaction */
         $transaction = $this->transactionRepository->search($criteria, $context)->first();
 
-        if(!$transaction || !$transaction->hasExtension('quickpayPayment')) {
+        if(!$transaction || !$transaction->hasExtension('unzerdirectPayment')) {
             throw new \Exception('Invalid transaction');
         }
         
         $salesChannelId = $transaction->getOrder()->getSalesChannelId();
         
         /** @var PaymentEntity $payment */
-        $payment = $transaction->getExtension('quickpayPayment');
+        $payment = $transaction->getExtension('unzerdirectPayment');
         
         if(!$paymentData)
         {
-            $paymentData = $this->fetchPaymentData($payment->getQuickpayId(), $salesChannelId);
+            $paymentData = $this->fetchPaymentData($payment->getUnzerDirectId(), $salesChannelId);
         }
         
         if($paymentData->test_mode && !$this->getTestModeConfig($salesChannelId))
@@ -323,13 +323,13 @@ class PaymentService
         
         foreach($operationsData as $operation)
         {
-            $existing = $operations->filterByProperty('quickpayOperationId', $operation->id)->first();
+            $existing = $operations->filterByProperty('unzerdirectOperationId', $operation->id)->first();
             
             $operationId = $existing ? $existing->getId() : Uuid::randomHex();
             
             $updateData[] = [
                 'id' => $operationId,
-                'quickpayOperationId' => $operation->id,
+                'unzerdirectOperationId' => $operation->id,
                 'type' => $operation->type,
                 'status' => $operation->qp_status_code,
                 'amount' => $operation->amount ?? 0,
@@ -344,11 +344,11 @@ class PaymentService
     }
 
     /**
-     * Update the status of the QuickPay payment according to the operations
+     * Update the status of the UnzerDirect payment according to the operations
      * 
      * @param PaymentEntity $payment
      * @param Context $context
-     * @return int new quickpay payment status
+     * @return int new unzerdirect payment status
      */
     private function updateStatus(PaymentEntity $payment, Context $context): int
     {
@@ -359,7 +359,7 @@ class PaymentService
         $criteria->addAssociation('operations');
         $criteria->getAssociation('operations')->addSorting(
             new FieldSorting('createdAt'),
-            new FieldSorting('quickpayOperationId')
+            new FieldSorting('unzerdirectOperationId')
         );
         $payment = $this->paymentRepository->search($criteria, $context)->first();
             
@@ -371,7 +371,7 @@ class PaymentService
         $amountRefunded = 0;
         $status = PaymentEntity::PAYMENT_CREATED;
         
-        /** @var QuickPayPaymentOperation $operation */
+        /** @var UnzerDirectPaymentOperation $operation */
         foreach($operations as $operation)
         {
             
@@ -573,7 +573,7 @@ class PaymentService
     }
 
     /**
-     * send a capture request to the QuickPay API
+     * send a capture request to the UnzerDirect API
      * 
      * @param string $paymentId
      * @param integer $amount
@@ -606,13 +606,13 @@ class PaymentService
         try
         {
 
-            $resource = sprintf('/payments/%s/capture', $payment->getQuickpayId());
+            $resource = sprintf('/payments/%s/capture', $payment->getUnzerDirectId());
             $this->log(Logger::DEBUG, 'payment capture requested');
             $paymentData = $this->request(self::METHOD_POST, $resource, $salesChannelId, [
                     'amount' => $amount
                 ], 
                 [
-                    'QuickPay-Callback-Url' => $this->getCallbackUrl($paymentId)
+                    'UnzerDirect-Callback-Url' => $this->getCallbackUrl($paymentId)
                 ]);
             $this->log(Logger::INFO, 'payment captured', $paymentData);
 
@@ -629,7 +629,7 @@ class PaymentService
     }
 
     /**
-     * send a capture request to the QuickPay API
+     * send a capture request to the UnzerDirect API
      * 
      * @param string $paymentId
      * @param Context $context
@@ -661,11 +661,11 @@ class PaymentService
         try
         {
 
-            $resource = sprintf('/payments/%s/cancel', $payment->getQuickpayId());
+            $resource = sprintf('/payments/%s/cancel', $payment->getUnzerDirectId());
             $this->log(Logger::DEBUG, 'payment cancellation requested');
             $paymentData = $this->request(self::METHOD_POST, $resource, $salesChannelId, [], 
                 [
-                    'QuickPay-Callback-Url' => $this->getCallbackUrl($paymentId)
+                    'UnzerDirect-Callback-Url' => $this->getCallbackUrl($paymentId)
                 ]);
             $this->log(Logger::DEBUG, 'payment canceled', $paymentData);
 
@@ -680,7 +680,7 @@ class PaymentService
     }
 
     /**
-     * send a capture request to the QuickPay API
+     * send a capture request to the UnzerDirect API
      * 
      * @param string $paymentId
      * @param integer $amount
@@ -715,13 +715,13 @@ class PaymentService
         try
         {
             
-            $resource = sprintf('/payments/%s/refund', $payment->getQuickpayId());
+            $resource = sprintf('/payments/%s/refund', $payment->getUnzerDirectId());
             $this->log(Logger::DEBUG, 'payment refund requested');
             $paymentData = $this->request(self::METHOD_POST, $resource, $salesChannelId, [
                     'amount' => $amount
                 ], 
                 [
-                    'QuickPay-Callback-Url' => $this->getCallbackUrl($paymentId)
+                    'UnzerDirect-Callback-Url' => $this->getCallbackUrl($paymentId)
                 ]);
             $this->log(Logger::DEBUG, 'payment refunded', $paymentData);
 
@@ -737,7 +737,7 @@ class PaymentService
     }
 
     /**
-     * Create a Quickpay payment operation
+     * Create a UnzerDirect payment operation
      * 
      * @param string $paymentId
      * @param string $type
@@ -749,7 +749,7 @@ class PaymentService
         $this->paymentOperationRepository->create([[
             'id' => Uuid::randomHex(),
             
-            'quickpayPaymentId' => $paymentId,
+            'unzerdirectPaymentId' => $paymentId,
             'type' => $type,
             'amount' => $amount,
             'rawJson' => json_decode(json_encode($payload), true)
@@ -831,16 +831,16 @@ class PaymentService
         return $result;
     }
 
-    public function validateChecksum(string $quickpayId, Request $request, SalesChannelContext $context)
+    public function validateChecksum(string $unzerdirectId, Request $request, SalesChannelContext $context)
     {
         $key = $this->getPrivateKeyConfig($context->getSalesChannelId());
         $checksum = hash_hmac('sha256', $request->getContent(), $key);
-        $submittedChecksum = $request->headers->get('quickpay-checksum-sha256');
+        $submittedChecksum = $request->headers->get('unzerdirect-checksum-sha256');
 
         if($checksum !== $submittedChecksum)
         {
             $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('quickpayId', $quickpayId));
+            $criteria->addFilter(new EqualsFilter('unzerdirectId', $unzerdirectId));
             $paymentId = $this->paymentRepository->searchIds($criteria, $context->getContext())
                 ->firstId();
             
@@ -865,7 +865,7 @@ class PaymentService
      */
     private function getApiKeyConfig(string $salesChannelId)
     {
-        return $this->configService->get('QuickPayPayment.config.publicKey', $salesChannelId);
+        return $this->configService->get('UnzerDirectPayment.config.publicKey', $salesChannelId);
     }
 
     /**
@@ -876,7 +876,7 @@ class PaymentService
      */
     private function getPrivateKeyConfig(string $salesChannelId)
     {
-        return $this->configService->get('QuickPayPayment.config.privateKey', $salesChannelId);
+        return $this->configService->get('UnzerDirectPayment.config.privateKey', $salesChannelId);
     }
 
     /**
@@ -887,7 +887,7 @@ class PaymentService
      */
     private function getTestModeConfig(string $salesChannelId): bool
     {
-        return $this->configService->get('QuickPayPayment.config.testmode', $salesChannelId);
+        return $this->configService->get('UnzerDirectPayment.config.testmode', $salesChannelId);
     }
     
     /**
@@ -901,13 +901,13 @@ class PaymentService
     }
     
     /**
-     * Get the URL for QuickPay-Callbacks
+     * Get the URL for UnzerDirect-Callbacks
      * 
      * @return string
      */
     private function getCallbackUrl()
     {
-        return $this->router->generate('quickpay.callback', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        return $this->router->generate('unzerdirect.callback', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
     
 }

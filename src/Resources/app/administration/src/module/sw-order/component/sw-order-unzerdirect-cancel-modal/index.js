@@ -1,13 +1,13 @@
-import template from './sw-order-quickpay-cancel-modal.html.twig';
-import './sw-order-quickpay-cancel-modal.scss';
+import template from './sw-order-unzerdirect-cancel-modal.html.twig';
+import './sw-order-unzerdirect-cancel-modal.scss';
 
 const { Component, Mixin} = Shopware;
 
-Component.register('sw-order-quickpay-cancel-modal', {
+Component.register('sw-order-unzerdirect-cancel-modal', {
     template,
 
     inject: [
-        'quickpayApiService',
+        'unzerdirectApiService',
     ],
     
     mixins: [
@@ -41,16 +41,16 @@ Component.register('sw-order-quickpay-cancel-modal', {
         async onConfirm() {
             try {
                 this.isLoading = true;
-                const response = await this.quickpayApiService.cancel(this.payment.id);
+                const response = await this.unzerdirectApiService.cancel(this.payment.id);
                 this.$emit('success');
                 this.createNotificationSuccess({
-                    message: this.$tc('sw-order.quickpay.cancelRequestedNotification')
+                    message: this.$tc('sw-order.unzerdirect.cancelRequestedNotification')
                 })
                 this.isLoading = false;
             } catch(e) {
                 this.$emit('fail');
                 this.createNotificationError({
-                    message: this.$tc('sw-order.quickpay.cancelRequestFailedNotification')
+                    message: this.$tc('sw-order.unzerdirect.cancelRequestFailedNotification')
                 })
                 this.isLoading = false;
             }

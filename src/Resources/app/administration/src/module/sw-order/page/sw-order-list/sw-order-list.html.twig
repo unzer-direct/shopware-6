@@ -1,37 +1,37 @@
 {% block sw_order_list_delete_modal %}
-    <sw-order-quickpay-capture-modal
+    <sw-order-unzerdirect-capture-modal
         v-if="showCaptureModal && showCaptureModal === item.id"
-        :payment="item.transactions.last().extensions.quickpayPayment"
+        :payment="item.transactions.last().extensions.unzerdirectPayment"
         :currency="item.currency"
         @success="onModalClosed('success')"
         @fail="onModalClosed('fail')"
         @close="onModalClosed('closed')">
-    </sw-order-quickpay-capture-modal>
-    <sw-order-quickpay-cancel-modal
+    </sw-order-unzerdirect-capture-modal>
+    <sw-order-unzerdirect-cancel-modal
         v-if="showCancelModal && showCancelModal === item.id"
-        :payment="item.transactions.last().extensions.quickpayPayment"
+        :payment="item.transactions.last().extensions.unzerdirectPayment"
         @success="onModalClosed('success')"
         @fail="onModalClosed('fail')"
         @close="onModalClosed('closed')">
-    </sw-order-quickpay-cancel-modal>
-    <sw-order-quickpay-refund-modal
+    </sw-order-unzerdirect-cancel-modal>
+    <sw-order-unzerdirect-refund-modal
         v-if="showRefundModal && showRefundModal === item.id"
-        :payment="item.transactions.last().extensions.quickpayPayment"
+        :payment="item.transactions.last().extensions.unzerdirectPayment"
         :currency="item.currency"
         @success="onModalClosed('success')"
         @fail="onModalClosed('fail')"
         @close="onModalClosed('closed')">
-    </sw-order-quickpay-refund-modal>
+    </sw-order-unzerdirect-refund-modal>
     {% parent %}
 {% endblock %}
 
 {% block sw_order_list_grid_columns %}
-    {% block sw_order_list_grid_columns_quickpay %}
-        <template #column-transactions.last().extensions.quickpayPayment="{ item }">
+    {% block sw_order_list_grid_columns_unzerdirect %}
+        <template #column-transactions.last().extensions.unzerdirectPayment="{ item }">
             <sw-button
-                v-if="quickpayCanCapture(item)"
-                :aria-label="$tc('sw-order.quickpay.capture')"
-                v-tooltip="$tc('sw-order.quickpay.capture')"
+                v-if="unzerdirectCanCapture(item)"
+                :aria-label="$tc('sw-order.unzerdirect.capture')"
+                v-tooltip="$tc('sw-order.unzerdirect.capture')"
                 size="x-small"
                 @click="showCaptureModal = item.id"
                 :disabled="!acl.can('order.editor')"
@@ -39,9 +39,9 @@
                     <sw-icon name="small-default-checkmark-line-medium" size="14px"></sw-icon>
             </sw-button>
             <sw-button
-                v-if="quickpayCanCancel(item)"
-                :aria-label="$tc('sw-order.quickpay.cancel')"
-                v-tooltip="$tc('sw-order.quickpay.cancel')"
+                v-if="unzerdirectCanCancel(item)"
+                :aria-label="$tc('sw-order.unzerdirect.cancel')"
+                v-tooltip="$tc('sw-order.unzerdirect.cancel')"
                 size="x-small"
                 @click="showCancelModal = item.id"
                 :disabled="!acl.can('order.editor')"
@@ -49,9 +49,9 @@
                     <sw-icon name="small-default-x-line-medium" size="14px"></sw-icon>
             </sw-button>
             <sw-button
-                v-if="quickpayCanRefund(item)"
-                :aria-label="$tc('sw-order.quickpay.refund')"
-                v-tooltip="$tc('sw-order.quickpay.refund')"
+                v-if="unzerdirectCanRefund(item)"
+                :aria-label="$tc('sw-order.unzerdirect.refund')"
+                v-tooltip="$tc('sw-order.unzerdirect.refund')"
                 size="x-small"
                 @click="showRefundModal = item.id"
                 :disabled="!acl.can('order.editor')"

@@ -1,14 +1,14 @@
-import template from './sw-order-detail-quickpay.html.twig';
+import template from './sw-order-detail-unzerdirect.html.twig';
 
 const { Component, } = Shopware;
 const { Criteria } = Shopware.Data;
 
-Component.register('sw-order-detail-quickpay', {
+Component.register('sw-order-detail-unzerdirect', {
     template,
 
     inject: [
         'repositoryFactory',
-        'quickpayApiService',
+        'unzerdirectApiService',
         'acl'
     ],
 
@@ -57,12 +57,12 @@ Component.register('sw-order-detail-quickpay', {
             return this.order.transactions.last();
         },
         
-        quickpayPayment() {
-            return this.transaction.extensions.quickpayPayment;
+        unzerdirectPayment() {
+            return this.transaction.extensions.unzerdirectPayment;
         },
         
         operations() {
-            return this.quickpayPayment.operations;
+            return this.unzerdirectPayment.operations;
         },
         
         operationColumns() {
@@ -70,28 +70,28 @@ Component.register('sw-order-detail-quickpay', {
                 {
                     property: 'createdAt',
                     dataIndex: 'createdAt',
-                    label: 'sw-order.quickpay.operationCreatedAt',
+                    label: 'sw-order.unzerdirect.operationCreatedAt',
                     allowResize: false,
                     sortable: false
                 },
                 {
                     property: 'type',
                     dataIndex: 'type',
-                    label: 'sw-order.quickpay.operationType',
+                    label: 'sw-order.unzerdirect.operationType',
                     allowResize: false,
                     sortable: false
                 },
                 {
                     property: 'amount',
                     dataIndex: 'amount',
-                    label: 'sw-order.quickpay.operationAmount',
+                    label: 'sw-order.unzerdirect.operationAmount',
                     allowResize: false,
                     sortable: false
                 },
                 {
                     property: 'status',
                     dataIndex: 'status',
-                    label: 'sw-order.quickpay.operationStatus',
+                    label: 'sw-order.unzerdirect.operationStatus',
                     allowResize: false,
                     sortable: false
                 }
@@ -101,11 +101,11 @@ Component.register('sw-order-detail-quickpay', {
         orderCriteria() {
             const criteria = new Criteria(1, 1);
 
-            criteria.addAssociation('transactions.quickpayPayment.operations')
+            criteria.addAssociation('transactions.unzerdirectPayment.operations')
             criteria.addAssociation('currency')
             criteria.getAssociation('transactions').addSorting(Criteria.sort('createdAt'));
-            criteria.getAssociation('transactions.quickpayPayment.operations')
-                .addSorting(Criteria.sort('createdAt'), Criteria.sort('quickpayOperationId'));
+            criteria.getAssociation('transactions.unzerdirectPayment.operations')
+                .addSorting(Criteria.sort('createdAt'), Criteria.sort('unzerdirectOperationId'));
 
             return criteria;
         },
@@ -115,39 +115,39 @@ Component.register('sw-order-detail-quickpay', {
         },
         
         paymentStatus() {
-            return this.$tc('sw-order.quickpay.status.' + this.quickpayPayment.status);
+            return this.$tc('sw-order.unzerdirect.status.' + this.unzerdirectPayment.status);
         },
         
         amountTotal() {
-            return this.quickpayPayment.amount / 100.0
+            return this.unzerdirectPayment.amount / 100.0
         },
         
         amountAuthorized() {
-            return this.quickpayPayment.amountAuthorized / 100.0
+            return this.unzerdirectPayment.amountAuthorized / 100.0
         },
         
         amountCaptured() {
-            return this.quickpayPayment.amountCaptured / 100.0
+            return this.unzerdirectPayment.amountCaptured / 100.0
         },
         
         amountRefunded() {
-            return this.quickpayPayment.amountRefunded / 100.0
+            return this.unzerdirectPayment.amountRefunded / 100.0
         },
         
         canCapture() {
-            return this.quickpayPayment.status === 5 // Fully Authorized
-                || this.quickpayPayment.status === 12; // Partially captured
+            return this.unzerdirectPayment.status === 5 // Fully Authorized
+                || this.unzerdirectPayment.status === 12; // Partially captured
         },
         
         canCancel() {
-            return this.quickpayPayment.status === 5 // Fully Authorized
-                || this.quickpayPayment.status === 0; // Created 
+            return this.unzerdirectPayment.status === 5 // Fully Authorized
+                || this.unzerdirectPayment.status === 0; // Created 
         },
         
         canRefund() {
-            return this.quickpayPayment.status === 15 // Partially captured
-                || this.quickpayPayment.status === 12 // Partially captured
-                || this.quickpayPayment.status === 32; // Partially refunded
+            return this.unzerdirectPayment.status === 15 // Partially captured
+                || this.unzerdirectPayment.status === 12 // Partially captured
+                || this.unzerdirectPayment.status === 32; // Partially refunded
         }
         
     },
@@ -171,9 +171,9 @@ Component.register('sw-order-detail-quickpay', {
             const failed = item.status && item.status !== '20000';
             
             if(failed)
-                return this.$tc('sw-order.quickpay.failedTypes.' + item.type);
+                return this.$tc('sw-order.unzerdirect.failedTypes.' + item.type);
             
-            return this.$tc('sw-order.quickpay.types.' + item.type);
+            return this.$tc('sw-order.unzerdirect.types.' + item.type);
         },
         
         getAmount(item) {
@@ -187,13 +187,13 @@ Component.register('sw-order-detail-quickpay', {
             if(!item.status)
                 return '-';
             
-            return this.$tc('sw-order.quickpay.statusCodes.' + item.status);
+            return this.$tc('sw-order.unzerdirect.statusCodes.' + item.status);
         },
         
         async refresh() {
             this.$emit('loading-change', true);
             try {
-                await this.quickpayApiService.refresh(this.quickpayPayment.id);
+                await this.unzerdirectApiService.refresh(this.unzerdirectPayment.id);
                 this.reloadEntityData();
             } catch(e) {
                 this.$emit('loading-change', false);

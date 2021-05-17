@@ -1,9 +1,9 @@
 <?php
 
-namespace QuickPay\Controller;
+namespace UnzerDirect\Controller;
 
 use Exception;
-use QuickPay\Service\PaymentService;
+use UnzerDirect\Service\PaymentService;
 use Shopware\Core\Framework\Context;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,8 +27,8 @@ class AdministrationController
 
     /**
      * @Route(
-     *     "/api/v{version}/_action/quickpay/capture",
-     *     name="api.action.quickpay.capture",
+     *     "/api/v{version}/_action/unzerdirect/capture",
+     *     name="api.action.unzerdirect.capture",
      *     methods={"POST"}
      * )
      */
@@ -39,8 +39,8 @@ class AdministrationController
     
     /**
      * @Route(
-     *     "/api/_action/quickpay/capture",
-     *     name="api.action.quickpay.capture",
+     *     "/api/_action/unzerdirect/capture",
+     *     name="api.action.unzerdirect.capture",
      *     methods={"POST"}
      * )
      */
@@ -68,8 +68,8 @@ class AdministrationController
 
     /**
      * @Route(
-     *     "/api/v{version}/_action/quickpay/cancel",
-     *     name="api.action.quickpay.cancel",
+     *     "/api/v{version}/_action/unzerdirect/cancel",
+     *     name="api.action.unzerdirect.cancel",
      *     methods={"POST"}
      * )
      */
@@ -80,8 +80,8 @@ class AdministrationController
     
     /**
      * @Route(
-     *     "/api/_action/quickpay/cancel",
-     *     name="api.action.quickpay.cancel",
+     *     "/api/_action/unzerdirect/cancel",
+     *     name="api.action.unzerdirect.cancel",
      *     methods={"POST"}
      * )
      */
@@ -109,8 +109,8 @@ class AdministrationController
 
     /**
      * @Route(
-     *     "/api/v{version}/_action/quickpay/refund",
-     *     name="api.action.quickpay.refund",
+     *     "/api/v{version}/_action/unzerdirect/refund",
+     *     name="api.action.unzerdirect.refund",
      *     methods={"POST"}
      * )
      */
@@ -121,8 +121,8 @@ class AdministrationController
     
     /**
      * @Route(
-     *     "/api/_action/quickpay/refund",
-     *     name="api.action.quickpay.refund",
+     *     "/api/_action/unzerdirect/refund",
+     *     name="api.action.unzerdirect.refund",
      *     methods={"POST"}
      * )
      */
@@ -150,8 +150,8 @@ class AdministrationController
 
     /**
      * @Route(
-     *     "/api/v{version}/_action/quickpay/refresh",
-     *     name="api.action.quickpay.refresh",
+     *     "/api/v{version}/_action/unzerdirect/refresh",
+     *     name="api.action.unzerdirect.refresh",
      *     methods={"POST"}
      * )
      */
@@ -162,8 +162,8 @@ class AdministrationController
     
     /**
      * @Route(
-     *     "/api/_action/quickpay/refresh",
-     *     name="api.action.quickpay.refresh",
+     *     "/api/_action/unzerdirect/refresh",
+     *     name="api.action.unzerdirect.refresh",
      *     methods={"POST"}
      * )
      */

@@ -1,6 +1,6 @@
 <?php
 
-namespace QuickPay\Entity;
+namespace UnzerDirect\Entity;
 
 use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
@@ -10,19 +10,19 @@ class PaymentOperationEntity extends Entity
 {
     use EntityIdTrait;
     /**
-     * @var PaymentEntity linked QuickPay payment
+     * @var PaymentEntity linked UnzerDirect payment
      */
     protected $payment;
     
     /**
-     * @var string Payment id from Quickpay
+     * @var string Payment id from UnzerDirect
      */
-    protected $quickpayPaymentId;
+    protected $unzerdirectPaymentId;
     
     /**
-     * @var string Operation id from Quickpay
+     * @var string Operation id from UnzerDirect
      */
-    protected $quickpayOperationId;
+    protected $unzerdirectOperationId;
 
     /**
      * @var string type of the operations
@@ -67,20 +67,20 @@ class PaymentOperationEntity extends Entity
         return $this->payment;
     }
     /**
-     * Get the QuickPay payment operation id
+     * Get the UnzerDirect payment operation id
      * @return integer
      */
     public function getOperationId()
     {
-        return $this->quickpayOperationId;
+        return $this->unzerdirectOperationId;
     }
     /**
-     * Get the QuickPay payment id
+     * Get the UnzerDirect payment id
      * @return integer
      */
     public function getPaymentIdId()
     {
-        return $this->quickpayPaymentId;
+        return $this->unzerdirectPaymentId;
     }
     /**
      * Get the type of the operation

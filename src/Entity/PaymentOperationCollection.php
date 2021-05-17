@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace QuickPay\Entity;
+namespace UnzerDirect\Entity;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 

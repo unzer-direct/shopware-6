@@ -1,15 +1,15 @@
 <sw-modal class="sw-confirm-modal"
-    :title="$tc('sw-order.quickpay.modal.captureTitle')"
+    :title="$tc('sw-order.unzerdirect.modal.captureTitle')"
     @modal-close="$emit('close')">
 
     <p class="sw-confirm-modal__text">
-        {{ $tc('sw-order.quickpay.modal.captureText') }}
+        {{ $tc('sw-order.unzerdirect.modal.captureText') }}
     </p>
     
     <p>
         <sw-field type="number"
                 :allowEmpty="false"
-                :label="$tc('sw-order.quickpay.modal.captureAmount')"
+                :label="$tc('sw-order.unzerdirect.modal.captureAmount')"
                 size="small"
                 :min="0"
                 :max="maxAmount"

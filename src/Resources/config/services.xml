@@ -6,38 +6,38 @@
 
     <services>
         
-        <service id="QuickPay\Service\PaymentService">
+        <service id="UnzerDirect\Service\PaymentService">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="Shopware\Core\System\StateMachine\StateMachineRegistry"/>
             <argument type="service" id="order_transaction.repository" />
-            <argument type="service" id="quickpay_payment_operation.repository" />
-            <argument type="service" id="quickpay_payment.repository" />
+            <argument type="service" id="unzerdirect_payment_operation.repository" />
+            <argument type="service" id="unzerdirect_payment.repository" />
             <argument type="service" id="language.repository" />
             <argument type="service" id="router" />
         </service>
         
-        <service id="QuickPay\Service\PaymentMethod">
-            <argument type="service" id="QuickPay\Service\PaymentService" />
+        <service id="UnzerDirect\Service\PaymentMethod">
+            <argument type="service" id="UnzerDirect\Service\PaymentService" />
             <tag name="shopware.payment.method.async" />
         </service>
         
-        <service id="QuickPay\Controller\StorefrontController" public="true">
-            <argument type="service" id="QuickPay\Service\PaymentService" />
+        <service id="UnzerDirect\Controller\StorefrontController" public="true">
+            <argument type="service" id="UnzerDirect\Service\PaymentService" />
         </service>
         
-        <service id="QuickPay\Controller\AdministrationController" public="true">
-            <argument type="service" id="QuickPay\Service\PaymentService" />
+        <service id="UnzerDirect\Controller\AdministrationController" public="true">
+            <argument type="service" id="UnzerDirect\Service\PaymentService" />
         </service>
                 
-        <service id="QuickPay\Entity\PaymentDefinition">
-            <tag name="shopware.entity.definition" entity="quickpay_payment" />
+        <service id="UnzerDirect\Entity\PaymentDefinition">
+            <tag name="shopware.entity.definition" entity="unzerdirect_payment" />
         </service>
                 
-        <service id="QuickPay\Entity\PaymentOperationDefinition">
-            <tag name="shopware.entity.definition" entity="quickpay_payment_operation" />
+        <service id="UnzerDirect\Entity\PaymentOperationDefinition">
+            <tag name="shopware.entity.definition" entity="unzerdirect_payment_operation" />
         </service>
         
-        <service id="QuickPay\Extension\OrderTransactionExtension">
+        <service id="UnzerDirect\Extension\OrderTransactionExtension">
             <tag name="shopware.entity.extension"/>
         </service>
     </services>

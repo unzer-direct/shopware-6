@@ -1,6 +1,6 @@
 <?php
 
-namespace QuickPay\Entity;
+namespace UnzerDirect\Entity;
 
 use DateTime;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -12,14 +12,14 @@ class PaymentEntity extends Entity
     use EntityIdTrait;
     
     /**
-     * @var string QuickPay Id of the payment
+     * @var string UnzerDirect Id of the payment
      */
-    protected $quickpayId;
+    protected $unzerdirectId;
     
     /**
-     * @var string QuickPay Id of the payment
+     * @var string UnzerDirect Id of the payment
      */
-    protected $quickpayOrderId;
+    protected $unzerdirectOrderId;
 
     /**
      * @var integer Status of the payment
@@ -64,19 +64,19 @@ class PaymentEntity extends Entity
     protected $amount;
     
     /**
-     * @var integer Amount authorized through QuickPay
+     * @var integer Amount authorized through UnzerDirect
      */
     protected $amountAuthorized;
 
     /**
      *
-     * @var integer Amount captured through QuickPay
+     * @var integer Amount captured through UnzerDirect
      */
     protected $amountCaptured;
     
     /**
      *
-     * @var integer Amount refunded through QuickPay
+     * @var integer Amount refunded through UnzerDirect
      */
     protected $amountRefunded;
     
@@ -91,21 +91,21 @@ class PaymentEntity extends Entity
     protected $operations;
     
     /**
-     * Get the QuickPay payment id
+     * Get the UnzerDirect payment id
      * @return string
      */
-    public function getQuickpayId()
+    public function getUnzerDirectId()
     {
-        return $this->quickpayId;
+        return $this->unzerdirectId;
     }
     
     /**
-     * Get the QuickPay payment id
+     * Get the UnzerDirect payment id
      * @return string
      */
-    public function getQuickpayOrderId()
+    public function getUnzerDirectOrderId()
     {
-        return $this->quickpayOrderId;
+        return $this->unzerdirectOrderId;
     }
     
     /**
@@ -154,7 +154,7 @@ class PaymentEntity extends Entity
     }
     
     /**
-     * Get the amount authorized through Quickpay
+     * Get the amount authorized through UnzerDirect
      * @return integer amount in cents
      */
     public function getAmountAuthorized()
@@ -163,7 +163,7 @@ class PaymentEntity extends Entity
     }
     
     /**
-     * Get the amount captured through Quickpay
+     * Get the amount captured through UnzerDirect
      * @return integer amount in cents
      */
     public function getAmountCaptured()
@@ -172,7 +172,7 @@ class PaymentEntity extends Entity
     }
     
     /**
-     * Get the amount refunded through Quickpay
+     * Get the amount refunded through UnzerDirect
      * @return integer amount in cents
      */
     public function getAmountRefunded()

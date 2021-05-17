@@ -1,13 +1,13 @@
 {
     "sw-order": {
         "list": {
-            "columnQuickpayActions": "QuickPay"
+            "columnUnzerDirectActions": "Unzer"
         },
         "detail": {
-            "tabQuickpay": "QuickPay"
+            "tabUnzerDirect": "Unzer"
         },
-        "quickpay": {
-            "paymentId": "QuickPay Payment ID:",
+        "unzerdirect": {
+            "paymentId": "Unzer Payment ID:",
             
             "amountTotal": "Total amount:",
             "amountAuthorized": "Authorized:",
@@ -69,14 +69,14 @@
             
             "modal": {
                 "captureTitle": "Capture Payment",
-                "captureText": "Check the amount and press confirm to send the capture request to QuickPay.",
+                "captureText": "Check the amount and press confirm to send the capture request to Unzer.",
                 "captureAmount": "Amount:",
                 
                 "cancelTitle": "Cancel Payment",
-                "cancelText": "Do you really want to cancel the payment? Click confirm to send the cancel request to QuickPay.",
+                "cancelText": "Do you really want to cancel the payment? Click confirm to send the cancel request to Unzer.",
 
                 "refundTitle": "Refund Payment",
-                "refundText": "Check the amount and press confirm to send the refund request to QuickPay.",
+                "refundText": "Check the amount and press confirm to send the refund request to Unzer.",
                 "refundAmount": "Amount:"
             },
             

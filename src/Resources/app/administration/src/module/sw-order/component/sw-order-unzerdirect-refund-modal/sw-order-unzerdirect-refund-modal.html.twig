@@ -1,15 +1,15 @@
 <sw-modal class="sw-confirm-modal"
-    :title="$tc('sw-order.quickpay.modal.refundTitle')"
+    :title="$tc('sw-order.unzerdirect.modal.refundTitle')"
     @modal-close="$emit('close')">
 
     <p class="sw-confirm-modal__text">
-        {{ $tc('sw-order.quickpay.modal.refundText') }}
+        {{ $tc('sw-order.unzerdirect.modal.refundText') }}
     </p>
     
     <p>
         <sw-field type="number"
                 :allowEmpty="false"
-                :label="$tc('sw-order.quickpay.modal.refundAmount')"
+                :label="$tc('sw-order.unzerdirect.modal.refundAmount')"
                 size="small"
                 :min="0"
                 :max="maxAmount"

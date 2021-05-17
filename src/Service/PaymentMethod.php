@@ -1,6 +1,6 @@
 <?php
 
-namespace QuickPay\Service;
+namespace UnzerDirect\Service;
 
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
