@@ -28,7 +28,7 @@ class AdministrationController
     /**
      * @Route(
      *     "/api/v{version}/_action/unzerdirect/capture",
-     *     name="api.action.unzerdirect.capture",
+     *     name="api.action.unzerdirect.capture_old",
      *     methods={"POST"}
      * )
      */
@@ -69,7 +69,7 @@ class AdministrationController
     /**
      * @Route(
      *     "/api/v{version}/_action/unzerdirect/cancel",
-     *     name="api.action.unzerdirect.cancel",
+     *     name="api.action.unzerdirect.cancel_old",
      *     methods={"POST"}
      * )
      */
@@ -110,7 +110,7 @@ class AdministrationController
     /**
      * @Route(
      *     "/api/v{version}/_action/unzerdirect/refund",
-     *     name="api.action.unzerdirect.refund",
+     *     name="api.action.unzerdirect.refund_old",
      *     methods={"POST"}
      * )
      */
@@ -151,7 +151,7 @@ class AdministrationController
     /**
      * @Route(
      *     "/api/v{version}/_action/unzerdirect/refresh",
-     *     name="api.action.unzerdirect.refresh",
+     *     name="api.action.unzerdirect.refresh_old",
      *     methods={"POST"}
      * )
      */
