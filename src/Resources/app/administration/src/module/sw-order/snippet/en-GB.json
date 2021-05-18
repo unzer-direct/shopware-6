@@ -1,7 +1,7 @@
 {
     "sw-order": {
         "list": {
-            "columnUnzerDirectActions": "Unzer"
+            "columnUnzerDirectActions": "Unzer Direct"
         },
         "detail": {
             "tabUnzerDirect": "Unzer"
