@@ -10,7 +10,7 @@
     }
   },
   "extra": {
-    "shopware-plugin-class": "UnzerDirect\\PaymentPlugin",
+    "shopware-plugin-class": "UnzerDirect\\UnzerDirectPayment",
     "label": {
       "de-DE": "Unzer Direct Payment Plugin",
       "en-GB": "Unzer Direct Payment Plugin"

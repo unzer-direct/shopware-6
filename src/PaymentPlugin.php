@@ -2,7 +2,6 @@
 
 namespace UnzerDirect;
 
-use UnzerDirect\Service\PaymentMethod;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -14,9 +13,9 @@ use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 
-class PaymentPlugin extends Plugin
+abstract class PaymentPlugin extends Plugin
 {
-public function install(InstallContext $context): void
+    public function install(InstallContext $context): void
     {
         $this->addPaymentMethod($context->getContext());
     }
@@ -38,6 +37,10 @@ public function install(InstallContext $context): void
         parent::deactivate($context);
     }
 
+    protected abstract function getPaymentMethodClass(): string;
+    protected abstract function getPaymentMethodName(): string;
+    protected abstract function getPaymentMethodDescription(): string;
+    
     private function addPaymentMethod(Context $context): void
     {
         $paymentMethodExists = $this->getPaymentMethodId();
@@ -53,9 +56,9 @@ public function install(InstallContext $context): void
 
         $paymentData = [
             // payment handler will be selected by the identifier
-            'handlerIdentifier' => tPaymentMethod::class,
-            'description' => 'Pay using the Unzer Direct payment service provider.',
-            'name' => 'Unzer Direct',
+            'handlerIdentifier' => $this->getPaymentMethodClass(),
+            'name' => $this->getPaymentMethodName(),
+            'description' => $this->getPaymentMethodDescription(),
             'pluginId' => $pluginId,
         ];
 
@@ -90,7 +93,7 @@ public function install(InstallContext $context): void
         $paymentRepository = $this->container->get('payment_method.repository');
 
         // Fetch ID for update
-        $paymentCriteria = (new Criteria())->addFilter(new EqualsFilter('handlerIdentifier', PaymentMethod::class));
+        $paymentCriteria = (new Criteria())->addFilter(new EqualsFilter('handlerIdentifier', $this->getPaymentMethodClass()));
         return $paymentRepository->searchIds($paymentCriteria, Context::createDefaultContext())->firstId();
     }
 }
