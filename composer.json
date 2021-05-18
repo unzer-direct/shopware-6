@@ -10,7 +10,7 @@
     }
   },
   "extra": {
-    "shopware-plugin-class": "QuickPay\\PaymentPlugin",
+    "shopware-plugin-class": "QuickPay\\QuickPayPayment",
     "label": {
       "de-DE": "QuickPay Payment Plugin",
       "en-GB": "QuickPay Payment Plugin"
