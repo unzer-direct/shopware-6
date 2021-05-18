@@ -26,6 +26,7 @@
 {% endblock %}
 
 {% block sw_order_list_grid_columns %}
+    {% parent %}
     {% block sw_order_list_grid_columns_quickpay %}
         <template #column-transactions.last().extensions.quickpayPayment="{ item }">
             <sw-button
