@@ -287,9 +287,7 @@ class PaymentService
         }
         
         $this->updatePaymentOperations($payment, $paymentData, $context);
-        $newStatus = $this->updateStatus($payment, $context);
-        if($newStatus !== -1)
-            $this->updateTransactionStatus($transactionId, $newStatus, $context);
+        $this->updateStatus($payment, $context);
     }
     
     /**
@@ -348,9 +346,8 @@ class PaymentService
      * 
      * @param PaymentEntity $payment
      * @param Context $context
-     * @return int new quickpay payment status
      */
-    private function updateStatus(PaymentEntity $payment, Context $context): int
+    private function updateStatus(PaymentEntity $payment, Context $context)
     {
         $previousStatus = $payment->getStatus();
         
@@ -500,50 +497,58 @@ class PaymentService
             'status' => $status,
         ]], $context);
         
-        return $status !== $previousStatus ? $status : -1;
+        $this->updateTransactionStatus($payment->getTransactionId(), $status, $context);
     }
     
     private function updateTransactionStatus(string $transactionId, int $paymentStatus, Context $context)
     {
-        $action = false;
+        $actions = [];
         switch($paymentStatus)
         {
             case PaymentEntity::PAYMENT_FULLY_AUTHORIZED:
-                $action = StateMachineTransitionActions::ACTION_AUTHORIZE;
+                $actions[] = StateMachineTransitionActions::ACTION_AUTHORIZE;
                 break;
             case PaymentEntity::PAYMENT_PARTLY_CAPTURED:
-                $action = StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
+                $actions[] = StateMachineTransitionActions::ACTION_DO_PAY;
+                $actions[] = StateMachineTransitionActions::ACTION_PAID_PARTIALLY;
                 break;
             case PaymentEntity::PAYMENT_FULLY_CAPTURED:
-                $action = StateMachineTransitionActions::ACTION_DO_PAY;
+                $actions[] = StateMachineTransitionActions::ACTION_DO_PAY;
+                $actions[] = StateMachineTransitionActions::ACTION_PAID;
                 break;
             case PaymentEntity::PAYMENT_CANCELLED:
-                $action = StateMachineTransitionActions::ACTION_CANCEL;
+                $actions[] = StateMachineTransitionActions::ACTION_CANCEL;
                 break;
             case PaymentEntity::PAYMENT_PARTLY_REFUNDED:
-                $action = StateMachineTransitionActions::ACTION_REFUND_PARTIALLY;
+                $actions[] = StateMachineTransitionActions::ACTION_REFUND_PARTIALLY;
                 break;
             case PaymentEntity::PAYMENT_FULLY_REFUNDED:
-                $action = StateMachineTransitionActions::ACTION_REFUND;
+                $actions[] = StateMachineTransitionActions::ACTION_REFUND;
                 break;
             case PaymentEntity::PAYMENT_INVALIDATED:
-                $action = StateMachineTransitionActions::ACTION_FAIL;
+                $actions[] = StateMachineTransitionActions::ACTION_FAIL;
                 break;
             
         }
-        if($action)
+        if($actions)
         {
             try {
-                $this->stateMachineRegistry->transition(
-                    new Transition(
-                        OrderTransactionDefinition::ENTITY_NAME,
-                        $transactionId,
-                        $action,
-                        'stateId'
-                    ),
-                    $context
-                );
+                
+                foreach($actions as $action)
+                {
+                    $this->stateMachineRegistry->transition(
+                        new Transition(
+                            OrderTransactionDefinition::ENTITY_NAME,
+                            $transactionId,
+                            $action,
+                            'stateId'
+                        ),
+                        $context
+                    );
+                }
+                
             } catch (Exception $e) {
+                die($e->getMessage());
             }
         }
     }

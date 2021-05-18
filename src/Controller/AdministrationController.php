@@ -28,7 +28,7 @@ class AdministrationController
     /**
      * @Route(
      *     "/api/v{version}/_action/quickpay/capture",
-     *     name="api.action.quickpay.capture",
+     *     name="api.action.quickpay.capture_old",
      *     methods={"POST"}
      * )
      */
@@ -69,7 +69,7 @@ class AdministrationController
     /**
      * @Route(
      *     "/api/v{version}/_action/quickpay/cancel",
-     *     name="api.action.quickpay.cancel",
+     *     name="api.action.quickpay.cancel_old",
      *     methods={"POST"}
      * )
      */
@@ -110,7 +110,7 @@ class AdministrationController
     /**
      * @Route(
      *     "/api/v{version}/_action/quickpay/refund",
-     *     name="api.action.quickpay.refund",
+     *     name="api.action.quickpay.refund_old",
      *     methods={"POST"}
      * )
      */
@@ -151,7 +151,7 @@ class AdministrationController
     /**
      * @Route(
      *     "/api/v{version}/_action/quickpay/refresh",
-     *     name="api.action.quickpay.refresh",
+     *     name="api.action.quickpay.refresh_old",
      *     methods={"POST"}
      * )
      */
