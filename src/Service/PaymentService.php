@@ -532,10 +532,10 @@ class PaymentService
         }
         if($actions)
         {
-            try {
+            foreach($actions as $action)
+            {
+                try {
                 
-                foreach($actions as $action)
-                {
                     $this->stateMachineRegistry->transition(
                         new Transition(
                             OrderTransactionDefinition::ENTITY_NAME,
@@ -545,10 +545,8 @@ class PaymentService
                         ),
                         $context
                     );
+                } catch (Exception $e) {
                 }
-                
-            } catch (Exception $e) {
-                die($e->getMessage());
             }
         }
     }
