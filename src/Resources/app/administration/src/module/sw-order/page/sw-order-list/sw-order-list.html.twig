@@ -26,6 +26,7 @@
 {% endblock %}
 
 {% block sw_order_list_grid_columns %}
+    {% parent %}
     {% block sw_order_list_grid_columns_unzerdirect %}
         <template #column-transactions.last().extensions.unzerdirectPayment="{ item }">
             <sw-button
