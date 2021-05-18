@@ -615,7 +615,7 @@ class PaymentService
                     'amount' => $amount
                 ], 
                 [
-                    'UnzerDirect-Callback-Url' => $this->getCallbackUrl($paymentId)
+                    'QuickPay-Callback-Url' => $this->getCallbackUrl($paymentId)
                 ]);
             $this->log(Logger::INFO, 'payment captured', $paymentData);
 
@@ -668,7 +668,7 @@ class PaymentService
             $this->log(Logger::DEBUG, 'payment cancellation requested');
             $paymentData = $this->request(self::METHOD_POST, $resource, $salesChannelId, [], 
                 [
-                    'UnzerDirect-Callback-Url' => $this->getCallbackUrl($paymentId)
+                    'QuickPay-Callback-Url' => $this->getCallbackUrl($paymentId)
                 ]);
             $this->log(Logger::DEBUG, 'payment canceled', $paymentData);
 
@@ -724,7 +724,7 @@ class PaymentService
                     'amount' => $amount
                 ], 
                 [
-                    'UnzerDirect-Callback-Url' => $this->getCallbackUrl($paymentId)
+                    'QuickPay-Callback-Url' => $this->getCallbackUrl($paymentId)
                 ]);
             $this->log(Logger::DEBUG, 'payment refunded', $paymentData);
 
