@@ -835,7 +835,7 @@ class PaymentService
     {
         $key = $this->getPrivateKeyConfig($context->getSalesChannelId());
         $checksum = hash_hmac('sha256', $request->getContent(), $key);
-        $submittedChecksum = $request->headers->get('unzerdirect-checksum-sha256');
+        $submittedChecksum = $request->headers->get('quickpay-checksum-sha256');
 
         if($checksum !== $submittedChecksum)
         {
