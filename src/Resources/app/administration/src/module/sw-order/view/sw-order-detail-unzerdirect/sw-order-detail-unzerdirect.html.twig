@@ -1,4 +1,4 @@
-<sw-card-view v-if="order && !isLoading" class="sw-order-detail-base">
+<sw-card-view v-if="order && !isLoading && unzerdirectPayment" class="sw-order-detail-base">
     <sw-order-unzerdirect-capture-modal
         v-if="showCaptureModal"
         :payment="unzerdirectPayment"
@@ -25,105 +25,101 @@
     
     <sw-card class="sw-order-user-card"
         :isLoading="isLoading">
-        
-        
-        <sw-container slot="grid" rows="auto auto">
 
-            <sw-card-section divider="bottom">
+        <sw-card-section divider="bottom">
 
-                <sw-container columns="1fr max-content"
-                    gap="0px 30px"
-                    align="center">
-                    <div class="sw-order-user-card__metadata">
-                        <div class="sw-order-user-card__metadata-user-name">
-                            {{ $tc('sw-order.unzerdirect.paymentId') }} {{ unzerdirectPayment.unzerdirectId }}
-                        </div>
+            <sw-container columns="1fr max-content"
+                gap="0px 30px"
+                align="center">
+                <div class="sw-order-user-card__metadata">
+                    <div class="sw-order-user-card__metadata-user-name">
+                        {{ $tc('sw-order.unzerdirect.paymentId') }} {{ unzerdirectPayment.unzerdirectId }}
                     </div>
-                    <div class="sw-order-user-card__info-summary">
-                        <div class="sw-order-user-card__metadata-price">
-                            {{ paymentStatus }}
-                        </div>
+                </div>
+                <div class="sw-order-user-card__info-summary">
+                    <div class="sw-order-user-card__metadata-price">
+                        {{ paymentStatus }}
                     </div>
-                </sw-container>
+                </div>
+            </sw-container>
 
-                <sw-container columns="repeat(auto-fit, minmax(250px, 1fr))" gap="30px 30px">
-                    
-                    <sw-description-list columns="1fr" grid="1fr" class="sw-order-user-card__summary-vertical">
-                        <dt>{{ $tc('sw-order.unzerdirect.amountTotal') }}</dt>
-                        <dd> {{ amountTotal }} {{ currency.symbol }}</dd>
-                        <dt>{{ $tc('sw-order.unzerdirect.amountRefunded') }}</dt>
-                        <dd> {{ amountRefunded }} {{ currency.symbol }}</dd>
-                    </sw-description-list>
-                    
-                    <sw-description-list columns="1fr" grid="1fr" class="sw-order-user-card__summary-vertical">
-                        <dt>{{ $tc('sw-order.unzerdirect.amountAuthorized') }}</dt>
-                        <dd> {{ amountAuthorized }} {{ currency.symbol }}</dd>
-                        <dt>{{ $tc('sw-order.unzerdirect.amountCaptured') }}</dt>
-                        <dd> {{ amountCaptured }} {{ currency.symbol }}</dd>
-                    </sw-description-list>
-                    
-                </sw-container>
-            </sw-card-section>
-            <sw-card-section divider="bottom">
-                <sw-container columns="20% 20% 20% 20%" gap="30px 30px">
-                    <sw-button
-                        :aria-label="$tc('sw-order.unzerdirect.capture')"
-                        @click="showCaptureModal = true"
-                        :disabled="!acl.can('order.editor') || !canCapture">
-                            <sw-icon name="small-default-checkmark-line-medium" size="14px"></sw-icon>
-                            {{ $tc('sw-order.unzerdirect.capture') }}
-                    </sw-button>
-                    <sw-button
-                        :aria-label="$tc('sw-order.unzerdirect.cancel')"
-                        @click="showCancelModal = true"
-                        :disabled="!acl.can('order.editor') || !canCancel">
-                            <sw-icon name="small-default-x-line-medium" size="14px"></sw-icon>
-                            {{ $tc('sw-order.unzerdirect.cancel') }}
-                    </sw-button>
-                    <sw-button
-                        :aria-label="$tc('sw-order.unzerdirect.refund')"
-                        @click="showRefundModal = true"
-                        :disabled="!acl.can('order.editor') || !canRefund">
-                            <sw-icon name="text-editor-undo" size="14px"></sw-icon>
-                            {{ $tc('sw-order.unzerdirect.refund') }}
-                    </sw-button>
-                    <sw-button
-                        :aria-label="$tc('sw-order.unzerdirect.refresh')"
-                        @click="refresh()">
-                            <sw-icon name="default-arrow-360-right" size="14px"></sw-icon>
-                            {{ $tc('sw-order.unzerdirect.refresh') }}
-                    </sw-button>
-                </sw-container>
-            </sw-card-section>
-        </sw-card>
-        <sw-card class="sw-order-user-card"
-            :label="$tc('sw-order.unzerdirect.operations')"
-            :isLoading="isLoading">
-            <sw-card-section divider="bottom">
-                    <sw-data-grid
-                        :dataSource="operations"
-                        :columns="operationColumns"
-                        :fullPage="false"
-                        :showSettings="false"
-                        :showSelection="false"
-                        :showActions="false"
-                        :allowColumnEdit="false"
-                        :allowInlineEdit="false"
-                        identifier="sw-order-unzerdirect-grid">
-                        
-                        <template #column-type="{ item }">
-                            {{ getTypeName(item) }}
-                        </template>
-                        
-                        <template #column-amount="{ item }">
-                            {{ getAmount(item) }}
-                        </template>
-                        
-                        <template #column-status="{ item }">
-                            {{ getStatus(item) }}
-                        </template>
-                    </sw-data-grid>
-            </sw-card-section>
-        </sw-container>
+            <sw-container columns="repeat(auto-fit, minmax(250px, 1fr))" gap="30px 30px">
+
+                <sw-description-list columns="1fr" grid="1fr" class="sw-order-user-card__summary-vertical">
+                    <dt>{{ $tc('sw-order.unzerdirect.amountTotal') }}</dt>
+                    <dd> {{ amountTotal }} {{ currency.symbol }}</dd>
+                    <dt>{{ $tc('sw-order.unzerdirect.amountRefunded') }}</dt>
+                    <dd> {{ amountRefunded }} {{ currency.symbol }}</dd>
+                </sw-description-list>
+
+                <sw-description-list columns="1fr" grid="1fr" class="sw-order-user-card__summary-vertical">
+                    <dt>{{ $tc('sw-order.unzerdirect.amountAuthorized') }}</dt>
+                    <dd> {{ amountAuthorized }} {{ currency.symbol }}</dd>
+                    <dt>{{ $tc('sw-order.unzerdirect.amountCaptured') }}</dt>
+                    <dd> {{ amountCaptured }} {{ currency.symbol }}</dd>
+                </sw-description-list>
+
+            </sw-container>
+        </sw-card-section>
+        <sw-card-section>
+            <sw-container columns="20% 20% 20% 20%" gap="30px 30px">
+                <sw-button
+                    :aria-label="$tc('sw-order.unzerdirect.capture')"
+                    @click="showCaptureModal = true"
+                    :disabled="!acl.can('order.editor') || !canCapture">
+                        <sw-icon name="small-default-checkmark-line-medium" size="14px"></sw-icon>
+                        {{ $tc('sw-order.unzerdirect.capture') }}
+                </sw-button>
+                <sw-button
+                    :aria-label="$tc('sw-order.unzerdirect.cancel')"
+                    @click="showCancelModal = true"
+                    :disabled="!acl.can('order.editor') || !canCancel">
+                        <sw-icon name="small-default-x-line-medium" size="14px"></sw-icon>
+                        {{ $tc('sw-order.unzerdirect.cancel') }}
+                </sw-button>
+                <sw-button
+                    :aria-label="$tc('sw-order.unzerdirect.refund')"
+                    @click="showRefundModal = true"
+                    :disabled="!acl.can('order.editor') || !canRefund">
+                        <sw-icon name="text-editor-undo" size="14px"></sw-icon>
+                        {{ $tc('sw-order.unzerdirect.refund') }}
+                </sw-button>
+                <sw-button
+                    :aria-label="$tc('sw-order.unzerdirect.refresh')"
+                    @click="refresh()">
+                        <sw-icon name="default-arrow-360-right" size="14px"></sw-icon>
+                        {{ $tc('sw-order.unzerdirect.refresh') }}
+                </sw-button>
+            </sw-container>
+        </sw-card-section>
+    </sw-card>
+    <sw-card class="sw-order-user-card"
+        :label="$tc('sw-order.unzerdirect.operations')"
+        :isLoading="isLoading">
+        <sw-card-section>
+            <sw-data-grid
+                :dataSource="operations"
+                :columns="operationColumns"
+                :fullPage="false"
+                :showSettings="false"
+                :showSelection="false"
+                :showActions="false"
+                :allowColumnEdit="false"
+                :allowInlineEdit="false"
+                identifier="sw-order-unzerdirect-grid">
+
+                <template #column-type="{ item }">
+                    {{ getTypeName(item) }}
+                </template>
+
+                <template #column-amount="{ item }">
+                    {{ getAmount(item) }}
+                </template>
+
+                <template #column-status="{ item }">
+                    {{ getStatus(item) }}
+                </template>
+            </sw-data-grid>
+        </sw-card-section>
     </sw-card>
 </sw-card-view>
