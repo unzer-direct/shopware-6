@@ -13,10 +13,12 @@
             <argument type="service" id="unzerdirect_payment_operation.repository" />
             <argument type="service" id="unzerdirect_payment.repository" />
             <argument type="service" id="language.repository" />
+            <argument type="service" id="plugin.repository" />
             <argument type="service" id="router" />
+            <argument type="service" id="unzerdirect.logger" />
         </service>
         
-        <service id="UnzerDirect\Service\PaymentMethod">
+        <service id="UnzerDirect\Service\CreditCardMethod">
             <argument type="service" id="UnzerDirect\Service\PaymentService" />
             <tag name="shopware.payment.method.async" />
         </service>
@@ -39,6 +41,11 @@
         
         <service id="UnzerDirect\Extension\OrderTransactionExtension">
             <tag name="shopware.entity.extension"/>
+        </service>
+        
+        <service id="unzerdirect.logger" class="Monolog\Logger">
+            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating" />
+            <argument type="string">unzerdirect</argument>
         </service>
     </services>
 </container>

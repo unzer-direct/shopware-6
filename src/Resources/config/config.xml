@@ -18,6 +18,12 @@
             <label lang="de-DE">Private Key</label>
         </input-field>
         
+        <input-field type="text">
+            <name>brandingId</name>
+            <label>Branding ID</label>
+            <label lang="de-DE">Branding ID</label>
+        </input-field>
+        
         <input-field type="checkbox">
             <name>testmode</name>
             <label>Testmode Enabled</label>
