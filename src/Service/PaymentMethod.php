@@ -11,16 +11,27 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class PaymentMethod implements AsynchronousPaymentHandlerInterface
+abstract class PaymentMethod implements AsynchronousPaymentHandlerInterface
 {
     /**
      * @var PaymentService
      */
     private $paymentService;
     
+    public static $name = '';
+    
+    public static $description = '';
+    
     public function __construct(PaymentService $paymentService)
     {
         $this->paymentService = $paymentService;
+    }
+    
+    public abstract function getPaymentMethods(): string;
+    
+    public function withBasket(): bool
+    { 
+        return true;
     }
     
     public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
@@ -29,7 +40,7 @@ class PaymentMethod implements AsynchronousPaymentHandlerInterface
         
         try{
             
-            $url = $this->paymentService->createOrUpdatePayment($transactionId, $transaction->getReturnUrl(), $salesChannelContext);
+            $url = $this->paymentService->createOrUpdatePayment($transactionId, $this, $transaction->getReturnUrl(), $salesChannelContext);
             
         } catch (\Exception $e) {
             throw new AsyncPaymentProcessException($transactionId, $e->getMessage());
