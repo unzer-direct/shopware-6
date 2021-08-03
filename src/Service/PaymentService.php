@@ -876,6 +876,8 @@ class PaymentService
     {
         $ch = curl_init();
 
+        $baseUrl = $this->getUrlConfig($salesChannelId) ?? $this->baseUrl;
+        
         $url = $this->baseUrl . $resource;
         
         //Set CURL options
@@ -984,6 +986,17 @@ class PaymentService
     private function getPrivateKeyConfig(string $salesChannelId)
     {
         return $this->configService->get('QuickPayPayment.config.privateKey', $salesChannelId);
+    }
+
+    /**
+     * Get private key from config
+     *
+     * @param string $salesChannelId
+     * @return mixed
+     */
+    private function getUrlConfig(string $salesChannelId)
+    {
+        return $this->configService->get('QuickPayPayment.config.alternativeUrl', $salesChannelId);
     }
 
     /**
