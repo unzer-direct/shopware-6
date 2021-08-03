@@ -2,22 +2,18 @@
 
 namespace QuickPay;
 
-use QuickPay\Service\PaymentMethod;
+use QuickPay\Service\CreditCardMethod;
+use QuickPay\Service\KlarnaMethod;
+use QuickPay\Service\PayPalMethod;
 
 class QuickPayPayment extends PaymentPlugin
 {
-    protected function getPaymentMethodClass(): string
+    protected function getPaymentMethodClasses(): array
     {
-        return PaymentMethod::class;
-    }
-
-    protected function getPaymentMethodDescription(): string
-    {
-        return 'Pay using the QuickPay payment service provider.';
-    }
-
-    protected function getPaymentMethodName(): string
-    {
-        return 'QuickPay';
+        return [
+            CreditCardMethod::class,
+            PayPalMethod::class,
+            KlarnaMethod::class
+        ];
     }
 }

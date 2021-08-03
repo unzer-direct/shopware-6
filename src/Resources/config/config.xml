@@ -18,6 +18,19 @@
             <label lang="de-DE">Private Key</label>
         </input-field>
         
+        <input-field type="text">
+            <name>brandingId</name>
+            <label>Branding ID</label>
+            <label lang="de-DE">Branding ID</label>
+        </input-field>
+        
+<!--        <input-field type="text">
+            <name>alternativeUrl</name>
+            <label>Alternative URL</label>
+            <label lang="de-DE">Alternative URL</label>
+            <helpText>Alternative API-URL i.e. to use the staging version</helpText>
+        </input-field>-->
+        
         <input-field type="checkbox">
             <name>testmode</name>
             <label>Testmode Enabled</label>

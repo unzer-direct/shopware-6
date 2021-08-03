@@ -13,10 +13,12 @@
             <argument type="service" id="quickpay_payment_operation.repository" />
             <argument type="service" id="quickpay_payment.repository" />
             <argument type="service" id="language.repository" />
+            <argument type="service" id="plugin.repository" />
             <argument type="service" id="router" />
+            <argument type="service" id="quickpay.logger" />
         </service>
         
-        <service id="QuickPay\Service\PaymentMethod">
+        <service id="QuickPay\Service\CreditCardMethod">
             <argument type="service" id="QuickPay\Service\PaymentService" />
             <tag name="shopware.payment.method.async" />
         </service>
@@ -39,6 +41,11 @@
         
         <service id="QuickPay\Extension\OrderTransactionExtension">
             <tag name="shopware.entity.extension"/>
+        </service>
+        
+        <service id="quickpay.logger" class="Monolog\Logger">
+            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating" />
+            <argument type="string">quickpay</argument>
         </service>
     </services>
 </container>
