@@ -2,7 +2,9 @@
 
 namespace UnzerDirect;
 
-use UnzerDirect\Service\PaymentMethod;
+use UnzerDirect\Service\CreditCardMethod;
+use UnzerDirect\Service\KlarnaMethod;
+use UnzerDirect\Service\PayPalMethod;
 
 class UnzerDirectPayment extends PaymentPlugin
 {

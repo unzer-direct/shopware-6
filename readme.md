@@ -2,18 +2,16 @@
 This plugin enables UnzerDirect as payment option for Shopware
 ## Installation ##
 The plugin can easily be installed by following the steps below:
-- Clone the repository into a folder named *UnzerDirectPayment* inside Shopwares *custom/plugins* directory.
-- For Shopware 6 with version 6.4.0.0 or later open the Extensions - My Extensions view in the administration
-- For earlier versions of Shopware 6 got to the Plugin-Settings in the System settings tab
-- The UnzerDirect Payment plugin should appear in the list and can be installed
-- Activate the plugin
+- Donwload the latest ziped version from the releases page
+- Go to Extensions->My Extensions in the Shopware 6 Admin Panel
+- Upload the zip-file and activate the extension
+- Continue with configuring the plugin
 
 ## Updating ##
 To update the plugin follow these steps
-- Pull the latest version
-- Go to the plugin settings as described above
-- Find the UnzerDirect Payment plugin
-- Click on the update option in the plugin menu
+- Download the latest release
+- Upload it using the Admin-Extensions page
+- Click on the update options in the extensions context menu
 
 ## Configuration ##
 After installing the plugin Shopware offers the possibility to configure it by clicking on the 3 dots and selecting the configuration option.
@@ -23,6 +21,7 @@ The UnzerDirect Payment plugin has the following settings:
 | ------------ | --------------------------------------------- |
 |  Public Key  | The API key for the UnzerDirect integration      |
 |  Private Key | The private key for the UnzerDirect integration  |
+|  Branding ID | The branding ID for your UnzerDirect page  |
 |  Test mode   | Configure wether the test mode is enabled. With test mode enabled payments using the UnzerDirect [test data](https://learn.unzerdirect.net/tech-talk/appendixes/test/ "test data") are possible.  |
 
 
