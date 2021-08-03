@@ -4,6 +4,8 @@ namespace UnzerDirect\Service;
 
 use Exception;
 use Monolog\Logger;
+use UnzerDirect\UnzerDirectPayment;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use UnzerDirect\Entity\PaymentEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -12,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\Plugin\PluginEntity;
 use Shopware\Core\Framework\Util\Random;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Language\LanguageEntity;
@@ -62,17 +65,23 @@ class PaymentService
      * @var EntityRepositoryInterface
      */
     private $languageRepository;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $pluginRepository;
         
     /**
      * @var RouterInterface
      */
     private $router;
-//    /**
-//     * @var LoggerInterface
-//     */
-//    private $logger;
 
-    public function __construct(SystemConfigService $configService, StateMachineRegistry $stateMachineRegistry, EntityRepositoryInterface $transactionRepository, EntityRepositoryInterface $paymentOperationRepository, EntityRepositoryInterface $paymentRepository, EntityRepositoryInterface $languageRepository, RouterInterface $router)
+    /**
+     * @var Logger
+     */
+    private $logger;
+
+    public function __construct(SystemConfigService $configService, StateMachineRegistry $stateMachineRegistry, EntityRepositoryInterface $transactionRepository, EntityRepositoryInterface $paymentOperationRepository, EntityRepositoryInterface $paymentRepository, EntityRepositoryInterface $languageRepository, EntityRepositoryInterface $pluginRepository, RouterInterface $router, Logger $logger)
     {
         $this->configService = $configService;
         $this->stateMachineRegistry = $stateMachineRegistry;
@@ -80,7 +89,9 @@ class PaymentService
         $this->paymentOperationRepository = $paymentOperationRepository;
         $this->paymentRepository = $paymentRepository;
         $this->languageRepository = $languageRepository;
+        $this->pluginRepository = $pluginRepository;
         $this->router = $router;
+        $this->logger = $logger;
     }
 
     private function log($level, $message, $context = [])
@@ -88,18 +99,19 @@ class PaymentService
         if(!is_array($context))
             $context = get_object_vars ($context);
         
-        //$this->logger->log($level, $message, $context);
+        $this->logger->log($level, $message, $context);
     }
     
     /**
      * Get or create a payment for a given transaction
      *
      * @param string $transactionId
+     * @param PaymentMethod $paymentMethod
      * @param string $returnUrl
      * @param SalesChannelContext $context
      * @return string Payment Link
      */
-    public function createOrUpdatePayment(string $transactionId, string $returnUrl, SalesChannelContext $context)
+    public function createOrUpdatePayment(string $transactionId, PaymentMethod $paymentMethod, string $returnUrl, SalesChannelContext $context)
     {
         $criteria = new Criteria([$transactionId]);
         $criteria->addAssociations(['order', 'order.currency', 'order.orderCustomer', 'unzerdirectPamyent']);
@@ -130,12 +142,13 @@ class PaymentService
             $paymentId = $payment->getId();
             $unzerdirectOrderId = $payment->getUnzerDirectOrderId();
             $unzerdirectId = $payment->getUnzerDirectId();
+            $this->updatePayment($returnUrl, $paymentMethod, $context);
         }
         else
         {
             $paymentId = Uuid::randomHex();
+            $unzerdirectId = $this->createPayment($transactionId, $paymentMethod, $currency, $unzerdirectOrderId, $context);
             $unzerdirectOrderId = $this->createOrderId();
-            $unzerdirectId = $this->createPayment($transactionId, $currency, $unzerdirectOrderId, $context->getSalesChannelId());
             $isNew = true;
         }
         
@@ -151,7 +164,7 @@ class PaymentService
         /** @var LanguageEntity $language */
         $language = $this->languageRepository->search($languageCriteria, $context->getContext())->first();
         
-        $link = $this->createPaymentLink($unzerdirectId, $transactionId, $amount, $email, $language->getLocale()->getCode(), $returnUrl, $context->getSalesChannelId());
+        $link = $this->createPaymentLink($unzerdirectId, $paymentMethod, $amount, $email, $language->getLocale()->getCode(), $returnUrl, $context->getSalesChannelId());
         
         $this->transactionRepository->update([[
             'id' => $transactionId,
@@ -174,17 +187,45 @@ class PaymentService
     }
     
     /**
-     * 
+     * @param string $unzerdirectId
+     * @param string $transactionId
+     * @param PaymentMethod $paymentMethod
+     * @param SalesChannelContext $context
+     */
+    private function updatePayment(string $unzerdirectId, string $transactionId, PaymentMethod $paymentMethod, SalesChannelContext $context)
+    {
+        $parameters = [
+            'basket' => $this->getBasketParameter($transactionId, $paymentMethod, $context->getContext()),
+            'shipping' => $this->getShippingParameter($transactionId, $paymentMethod, $context->getContext())
+        ];
+        
+        $this->log(Logger::DEBUG, 'payment update requested', $parameters);
+        //Create payment
+        $resource = sprintf('/payments/%s', $unzerdirectId);
+        $paymentData = $this->request(self::METHOD_PATCH, $resource, $context->getSalesChannelId(), $parameters);
+        $this->log(Logger::INFO, 'payment updated', $paymentData);
+    }
+    
+    /**
+     * @param string $transactionId
+     * @param PaymentMethod $paymentMethod
      * @param string $currency
      * @param string $orderId
-     * @param string $salesChannelId
+     * @param SalesChannelContext $context
      * @return string
      */
-    private function createPayment(string $transactionId, string $currency, string $orderId, string $salesChannelId)
+    private function createPayment(string $transactionId, PaymentMethod $paymentMethod, string $currency, string $orderId, SalesChannelContext $context)
     {
         $parameters = [
             'currency' => $currency,
             'order_id' => $orderId,
+            'basket' => $this->getBasketParameter($transactionId, $paymentMethod, $context->getContext()),
+            'shipping' => $this->getShippingParameter($transactionId, $paymentMethod, $context->getContext()),
+            'shopsystem' => [
+                'name' => 'Shopware 6',
+                'version' => $this->getPluginVersion($context->getContext())
+            ],
+            'branding_id' => $this->getBrandingIdConfig($context->getSalesChannelId()),
             'variables' => [
                 'transaction_id' => $transactionId
             ]
@@ -192,15 +233,78 @@ class PaymentService
         
         $this->log(Logger::DEBUG, 'payment creation requested', $parameters);
         //Create payment
-        $paymentData = $this->request(self::METHOD_POST, '/payments', $salesChannelId, $parameters);
+        $paymentData = $this->request(self::METHOD_POST, '/payments', $context->getSalesChannelId(), $parameters);
         $this->log(Logger::INFO, 'payment created', $paymentData);
         
         return $paymentData->id;
     }
     
     /**
+     * @param string $transactionId
+     * @param PaymentMethod $paymentMethod
+     * @return array
+     */
+    private function getBasketParameter(string $transactionId, PaymentMethod $paymentMethod, Context $context): array
+    {
+        if(!$paymentMethod->withBasket())
+            return [];
+        
+        $criteria = new Criteria([$transactionId]);
+        $criteria->addAssociations(['order', 'order.lineItems', 'order.lineItems.product']);
+        
+        /** @var OrderTransactionEntity $transaction */
+        $transaction = $this->transactionRepository->search($criteria, $context)->first();
+        
+        $basket = [];
+        
+        /** @var OrderLineItemEntity $lineItem */
+        foreach($transaction->getOrder()->getLineItems() as $lineItem)
+        {
+            $price = $lineItem->getPrice();
+            $basket[] = [
+                'qty' => $lineItem->getQuantity(),
+                'item_no' => $lineItem->getProduct()->getProductNumber(),
+                'item_name' => $lineItem->getLabel(),
+                'item_price' => $price->getTotalPrice() * 100,
+                'vat_rate' => $price->getTaxRules()->count() > 0 ? $price->getTaxRules()->first()->getTaxRate() / 100.0 : 0
+            ];
+        }
+        
+        $shippingPrice = $transaction->getOrder()->getShippingCosts();
+
+        return $basket;
+    }
+    
+    /**
+     * @param string $transactionId
+     * @param PaymentMethod $paymentMethod
+     * @return array
+     */
+    private function getShippingParameter(string $transactionId, PaymentMethod $paymentMethod, Context $context): array
+    {
+        if(!$paymentMethod->withBasket())
+            return [];
+        
+        $criteria = new Criteria([$transactionId]);
+        $criteria->addAssociations(['order', 'order.lineItems', 'order.lineItems.product']);
+        
+        /** @var OrderTransactionEntity $transaction */
+        $transaction = $this->transactionRepository->search($criteria, $context)->first();
+        
+        $shippingPrice = $transaction->getOrder()->getShippingCosts();
+        $shipping = [
+            'amount' => $shippingPrice->getTotalPrice() * 100,
+            'vat_rate' => $shippingPrice->getTaxRules()->count() > 0 ? $shippingPrice->getTaxRules()->first()->getTaxRate() / 100.0 : 0
+        ];
+
+        return $shipping;
+    }
+    
+    /**
      * Create payment link
      *
+     * @param string $paymentId QuickPay payment ID
+     * @param PaymentMethod $paymentMethod
      * @param string $paymentId UnzerDirect payment ID
      * @param string $transactionId UnzerDirect transactionId
      * @param integer $amount invoice amount of the order
@@ -211,7 +315,7 @@ class PaymentService
      *
      * @return string link for UnzerDirect payment
      */
-    private function createPaymentLink(string $paymentId, string $transactionId, int $amount, string $email, string $locale,  string $returnUrl, string $salesChannelId)
+    private function createPaymentLink(string $paymentId, PaymentMethod $paymentMethod, int $amount, string $email, string $locale,  string $returnUrl, string $salesChannelId)
     {
         $continueUrl = $returnUrl;
         $cancelUrl = str_contains($returnUrl, '?') ?
@@ -226,7 +330,8 @@ class PaymentService
             'cancelurl'          => $cancelUrl,
             'callbackurl'        => $callbackUrl,
             'customer_email'     => $email,
-            'language'           => substr($locale, 0, 2)
+            'language'           => substr($locale, 0, 2),
+            'payment_methods'    => $paymentMethod->getPaymentMethods()
         ];
         
         $this->log(Logger::DEBUG, 'payment link creation requested', $parameters);
@@ -773,6 +878,8 @@ class PaymentService
     {
         $ch = curl_init();
 
+        $baseUrl = $this->getUrlConfig($salesChannelId) ?? $this->baseUrl;
+        
         $url = $this->baseUrl . $resource;
         
         //Set CURL options
@@ -783,7 +890,7 @@ class PaymentService
             CURLOPT_HTTPAUTH       => CURLAUTH_BASIC,
             CURLOPT_HTTPHEADER     => $this->getHeaders($headers, $salesChannelId),
             CURLOPT_CUSTOMREQUEST  => $method,
-            CURLOPT_POSTFIELDS     => http_build_query($params, '', '&'),
+            CURLOPT_POSTFIELDS     => json_encode($params),
         ];
 
         curl_setopt_array($ch, $options);
@@ -823,7 +930,8 @@ class PaymentService
         $result = [
             'Authorization: Basic ' . base64_encode(':' . $this->getApiKeyConfig($salesChannelId)),
             'Accept-Version: v10',
-            'Accept: application/json'
+            'Accept: application/json',
+            'Content-Type:application/json'
         ];
         
         foreach ($headers as $key => $value)
@@ -883,6 +991,17 @@ class PaymentService
     }
 
     /**
+     * Get private key from config
+     *
+     * @param string $salesChannelId
+     * @return mixed
+     */
+    private function getUrlConfig(string $salesChannelId)
+    {
+        return $this->configService->get('QuickPayPayment.config.alternativeUrl', $salesChannelId);
+    }
+
+    /**
      * Get API key from config
      *
      * @param string $salesChannelId
@@ -891,6 +1010,34 @@ class PaymentService
     private function getTestModeConfig(string $salesChannelId): bool
     {
         return $this->configService->get('UnzerDirectPayment.config.testmode', $salesChannelId);
+    }
+
+    /**
+     * Get Branding ID from config
+     *
+     * @param string $salesChannelId
+     * @return string
+     */
+    private function getBrandingIdConfig(string $salesChannelId): ?string
+    {
+        return $this->configService->get('UnzerDirectPayment.config.brandingId', $salesChannelId);
+    }
+    
+    /**
+     * Get the Version number of the payment plugin
+     * 
+     * @param Context $context
+     * @return string
+     */
+    private function getPluginVersion(Context $context): string
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('baseClass', UnzerDirectPayment::class));
+        
+        /** @var PluginEntity $plugin */
+        $plugin = $this->pluginRepository->search($criteria, $context)->first();
+        
+        return $plugin ? $plugin->getVersion() : '1.0.0';
     }
     
     /**
