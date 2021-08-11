@@ -265,7 +265,7 @@ class PaymentService
                 'qty' => $lineItem->getQuantity(),
                 'item_no' => $lineItem->getProduct()->getProductNumber(),
                 'item_name' => $lineItem->getLabel(),
-                'item_price' => $price->getTotalPrice() * 100,
+                'item_price' => intval(round($price->getUnitPrice() * 100))
                 'vat_rate' => $price->getTaxRules()->count() > 0 ? $price->getTaxRules()->first()->getTaxRate() / 100.0 : 0
             ];
         }
