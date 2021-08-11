@@ -23,6 +23,16 @@
             <tag name="shopware.payment.method.async" />
         </service>
         
+        <service id="QuickPay\Service\KlarnaMethod">
+            <argument type="service" id="QuickPay\Service\PaymentService" />
+            <tag name="shopware.payment.method.async" />
+        </service>
+        
+        <service id="QuickPay\Service\PayPalMethod">
+            <argument type="service" id="QuickPay\Service\PaymentService" />
+            <tag name="shopware.payment.method.async" />
+        </service>
+        
         <service id="QuickPay\Controller\StorefrontController" public="true">
             <argument type="service" id="QuickPay\Service\PaymentService" />
         </service>

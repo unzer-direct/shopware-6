@@ -3,7 +3,7 @@
   "description": "QuickPay Payment Plugin",
   "type": "shopware-platform-plugin",
   "license": "MIT",
-  "version": "v1.1.0",
+  "version": "v1.1.1",
   "autoload": {
     "psr-4": {
       "QuickPay\\": "src/"
