@@ -147,8 +147,8 @@ class PaymentService
         else
         {
             $paymentId = Uuid::randomHex();
-            $unzerdirectId = $this->createPayment($transactionId, $paymentMethod, $currency, $unzerdirectOrderId, $context);
             $unzerdirectOrderId = $this->createOrderId();
+            $unzerdirectId = $this->createPayment($transactionId, $paymentMethod, $currency, $unzerdirectOrderId, $context);
             $isNew = true;
         }
         
