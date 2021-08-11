@@ -23,6 +23,16 @@
             <tag name="shopware.payment.method.async" />
         </service>
         
+        <service id="UnzerDirect\Service\KlarnaMethod">
+            <argument type="service" id="UnzerDirect\Service\PaymentService" />
+            <tag name="shopware.payment.method.async" />
+        </service>
+        
+        <service id="UnzerDirect\Service\PayPalMethod">
+            <argument type="service" id="UnzerDirect\Service\PaymentService" />
+            <tag name="shopware.payment.method.async" />
+        </service>
+        
         <service id="UnzerDirect\Controller\StorefrontController" public="true">
             <argument type="service" id="UnzerDirect\Service\PaymentService" />
         </service>
