@@ -155,7 +155,7 @@ class PaymentService
         //Create PaymentLink
         $amount = intval(round($transaction->getAmount()->getTotalPrice() * 100));
         $email = $transaction->getOrder()->getOrderCustomer()->getEmail();
-        
+
         $languageCriteria = new Criteria([
             $context->getContext()->getLanguageId()
         ]);
@@ -230,7 +230,7 @@ class PaymentService
                 'transaction_id' => $transactionId
             ]
         ];
-        
+
         $this->log(Logger::DEBUG, 'payment creation requested', $parameters);
         //Create payment
         $paymentData = $this->request(self::METHOD_POST, '/payments', $context->getSalesChannelId(), $parameters);
@@ -246,6 +246,7 @@ class PaymentService
      */
     private function getBasketParameter(string $transactionId, PaymentMethod $paymentMethod, Context $context): array
     {
+        
         if(!$paymentMethod->withBasket())
             return [];
         
@@ -257,16 +258,24 @@ class PaymentService
         
         $basket = [];
         
+        $gross = $transaction->getOrder()->getTaxStatus() === 'gross';
+        
         /** @var OrderLineItemEntity $lineItem */
         foreach($transaction->getOrder()->getLineItems() as $lineItem)
         {
             $price = $lineItem->getPrice();
+            $taxPrice = $price->getCalculatedTaxes()->getAmount() / $lineItem->getQuantity();
+            $tax = $price->getCalculatedTaxes()->first();
+            
+            $unitPrice = $price->getUnitPrice() +
+                ($gross ? 0 : $taxPrice);
+            
             $basket[] = [
                 'qty' => $lineItem->getQuantity(),
                 'item_no' => $lineItem->getProduct()->getProductNumber(),
                 'item_name' => $lineItem->getLabel(),
-                'item_price' => intval(round($price->getUnitPrice() * 100)),
-                'vat_rate' => $price->getTaxRules()->count() > 0 ? $price->getTaxRules()->first()->getTaxRate() / 100.0 : 0
+                'item_price' => intval(round($unitPrice * 100)),
+                'vat_rate' => $tax ? $tax->getTaxRate() / 100.0 : 0
             ];
         }
         
