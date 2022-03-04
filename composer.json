@@ -1,9 +1,15 @@
 {
   "name": "unzerdirect/payment",
-  "description": "Unzer Direct Payment Plugin",
+  "description": "UnzerDirect Payment Plugin",
   "type": "shopware-platform-plugin",
   "license": "MIT",
-  "version": "v1.1.3",
+  "version": "v1.1.4",
+  "authors": [{
+    "name": "Dev1",
+    "email": "",
+    "homepage": "",
+    "role": "Developer"
+}],
   "autoload": {
     "psr-4": {
       "UnzerDirect\\": "src/"
@@ -12,8 +18,16 @@
   "extra": {
     "shopware-plugin-class": "UnzerDirect\\UnzerDirectPayment",
     "label": {
-      "de-DE": "Unzer Direct Payment Plugin",
-      "en-GB": "Unzer Direct Payment Plugin"
+      "de-DE": "UnzerDirect Payment Plugin",
+      "en-GB": "UnzerDirect Payment Plugin"
+    },
+    "manufacturerLink": {
+      "de-DE": "",
+      "en-GB": ""
+    },
+    "supportLink": {
+        "de-DE": "",
+        "en-GB": ""
     }
   }
 }

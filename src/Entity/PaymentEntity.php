@@ -1,5 +1,6 @@
 <?php
 
+
 namespace UnzerDirect\Entity;
 
 use DateTime;
@@ -10,22 +11,18 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 class PaymentEntity extends Entity
 {
     use EntityIdTrait;
-    
     /**
      * @var string UnzerDirect Id of the payment
      */
     protected $unzerdirectId;
-    
     /**
      * @var string UnzerDirect Id of the payment
      */
     protected $unzerdirectOrderId;
-
     /**
      * @var integer Status of the payment
      */
     protected $status;
-    
     const PAYMENT_CREATED = 0;
     const PAYMENT_FULLY_AUTHORIZED = 5;
     const PAYMENT_CAPTURE_REQUESTED = 10;
@@ -37,64 +34,53 @@ class PaymentEntity extends Entity
     const PAYMENT_PARTLY_REFUNDED = 32;
     const PAYMENT_FULLY_REFUNDED = 35;
     const PAYMENT_INVALIDATED = 100;
-    
     /**
      * @var string The Id of the transaction
      */
     protected $transactionId;
-    
     /**
      * @var OrderTransactionEntity The transaction object
      */
     protected $transaction;
-    
     /**
      * @var string link for the payment
      */
     protected $link;
-    
     /**
      * @var string currency for the payment
      */
     protected $currency;
-    
     /**
      * @var integer Amount to pay
      */
     protected $amount;
-    
     /**
      * @var integer Amount authorized through UnzerDirect
      */
     protected $amountAuthorized;
-
     /**
      *
      * @var integer Amount captured through UnzerDirect
      */
     protected $amountCaptured;
-    
     /**
      *
      * @var integer Amount refunded through UnzerDirect
      */
     protected $amountRefunded;
-    
     /**
      * @var DateTime timestamp of the payment authorization
      */
     protected $authorizedAt;
-    
     /**
      * @var PaymentOperationCollection List of operations
      */
     protected $operations;
-    
     /**
      * Get the UnzerDirect payment id
      * @return string
      */
-    public function getUnzerDirectId()
+    public function getUnzerdirectId()
     {
         return $this->unzerdirectId;
     }
@@ -103,7 +89,7 @@ class PaymentEntity extends Entity
      * Get the UnzerDirect payment id
      * @return string
      */
-    public function getUnzerDirectOrderId()
+    public function getUnzerdirectOrderId()
     {
         return $this->unzerdirectOrderId;
     }
@@ -154,7 +140,7 @@ class PaymentEntity extends Entity
     }
     
     /**
-     * Get the amount authorized through UnzerDirect
+     * Get the amount authorized through Unzerdirect
      * @return integer amount in cents
      */
     public function getAmountAuthorized()
@@ -163,7 +149,7 @@ class PaymentEntity extends Entity
     }
     
     /**
-     * Get the amount captured through UnzerDirect
+     * Get the amount captured through Unzerdirect
      * @return integer amount in cents
      */
     public function getAmountCaptured()
@@ -172,14 +158,14 @@ class PaymentEntity extends Entity
     }
     
     /**
-     * Get the amount refunded through UnzerDirect
+     * Get the amount refunded through Unzerdirect
      * @return integer amount in cents
      */
     public function getAmountRefunded()
     {
         return $this->amountRefunded;
     }
-
+    
     /**
      * get the time the Payment was authorized at
      * @return DateTime
@@ -188,7 +174,7 @@ class PaymentEntity extends Entity
     {
         return $this->authorizedAt;
     }
-
+    
     /**
      * Get the List of linked operations
      * @return PaymentOperationCollection operations for the payment

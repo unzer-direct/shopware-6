@@ -1,6 +1,6 @@
 import ApiService from 'src/core/service/api.service';
 
-export default class UnzerDirectApiService extends ApiService {
+export default class UnzerdirectApiService extends ApiService {
     constructor(httpClient, loginService, apiEndpoint = 'unzerdirect') {
         super(httpClient, loginService, apiEndpoint);
         this.name = 'unzerdirectService';
@@ -10,7 +10,7 @@ export default class UnzerDirectApiService extends ApiService {
         return await this.httpClient.post('_action/unzerdirect/capture', {
             id: id,
             amount: amount
-        },{
+        }, {
             headers: this.getBasicHeaders()
         });
     }
@@ -18,7 +18,7 @@ export default class UnzerDirectApiService extends ApiService {
     async cancel(id) {
         return await this.httpClient.post('_action/unzerdirect/cancel', {
             id: id,
-        },{
+        }, {
             headers: this.getBasicHeaders()
         });
     }
@@ -27,7 +27,7 @@ export default class UnzerDirectApiService extends ApiService {
         return await this.httpClient.post('_action/unzerdirect/refund', {
             id: id,
             amount: amount
-        },{
+        }, {
             headers: this.getBasicHeaders()
         });
     }
@@ -35,7 +35,7 @@ export default class UnzerDirectApiService extends ApiService {
     async refresh(id) {
         return await this.httpClient.post('_action/unzerdirect/refresh', {
             id: id,
-        },{
+        }, {
             headers: this.getBasicHeaders()
         });
     }

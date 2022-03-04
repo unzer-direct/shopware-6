@@ -22,7 +22,7 @@ The UnzerDirect Payment plugin has the following settings:
 |  Public Key  | The API key for the UnzerDirect integration      |
 |  Private Key | The private key for the UnzerDirect integration  |
 |  Branding ID | The branding ID for your UnzerDirect page  |
-|  Test mode   | Configure wether the test mode is enabled. With test mode enabled payments using the UnzerDirect [test data](https://learn.unzerdirect.net/tech-talk/appendixes/test/ "test data") are possible.  |
+|  Test mode   | Configure wether the test mode is enabled. With test mode enabled payments using the UnzerDirect [test data](https://learn.QuickPay.net/tech-talk/appendixes/test/ "test data") are possible.  |
 
 
 The public and private key can be found in the UnzerDirect management panel under Settings->Integration (Use the API-Key for the public key configuration)
